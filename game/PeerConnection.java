@@ -11,36 +11,39 @@ public class PeerConnection extends Thread {
     private String ip;
     private Socket conn;
 
-    public PeerConnection(Socket conn) throws Exception {
-        this.conn = conn;
-        System.out.println("Connected to: " + conn.getInetAddress());
+    public PeerConnection(String ip) throws Exception {
+        this.ip = ip;
     }
 
     @Override
     public void run() {
-//        try {
-//            connect();
-//        } catch (IOException e) {
-//            System.out.println("IOException for peer thread: " + ip);
-//            e.printStackTrace();
-//        }
-//
-//        // We have connection.
-//        logic();
-    }
-
-    private void logic() {
-
-    }
-
-    private void connect() throws IOException {
-        ServerSocket handshaker = new ServerSocket(6666);
-        try {
-            conn = new Socket(ip, 6666);
-        } catch (ConnectException e) {
-            conn = handshaker.accept();
+        while (!isConnected()) {
+            try {
+                conn = new Socket(ip, 6666);
+            } catch (IOException e) {
+                System.out.println("Klamydia.");
+            }
         }
 
-        System.out.println("Connection?: " + conn.getInetAddress());
+        while(true) {
+            try {
+                System.out.println("Active conection with: " + ip);
+                Thread.sleep(2000);
+            } catch (InterruptedException e) {
+                System.out.println("Whatever");
+            }
+        }
+    }
+
+    public boolean isConnected() {
+        return conn.isConnected();
+    }
+
+    public void giveConnection(Socket conn) {
+        this.conn = conn;
+    }
+
+    public String getIP() {
+        return ip;
     }
 }

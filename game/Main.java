@@ -1,12 +1,13 @@
 package game;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.net.ConnectException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.sun.security.ntlm.Server;
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.stage.Stage;
@@ -16,7 +17,6 @@ import javafx.scene.image.*;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.text.*;
-import sun.net.ConnectionResetException;
 
 public class Main extends Application {
 
@@ -207,24 +207,43 @@ public class Main extends Application {
 	}
 
 	public static void main(String[] args) throws Exception {
+		Commander cmd = new Commander(new BufferedReader(new InputStreamReader(System.in)));
 		connect();
 		launch(args);
 	}
 
-	private static void connect() throws Exception {
-		ServerSocket handshaker = new ServerSocket(6666);
-		for (int i = 0; i < playerAddresses.length; i++) {
-			Socket conn;
-			try {
-				System.out.println("Attempting connection to: " + playerAddresses[i]);
-				conn = new Socket(playerAddresses[i], 6666);
-			} catch (ConnectException e) {
-				System.out.println("Awating connection...");
-				conn = handshaker.accept();
-			}
+	private static ServerSocket handshaker;
+	private static ArrayList<PeerConnection> connections = new ArrayList<>();
 
-			PeerConnection peer = new PeerConnection(conn);
+	private static void connect() throws Exception {
+		handshaker = new ServerSocket(6666);
+		for (int i = 0; i < playerAddresses.length; i++) {
+			PeerConnection peer = new PeerConnection(playerAddresses[i]);
+			connections.add(peer);
 			peer.start();
+		}
+
+		listen();
+	}
+
+	public static void listen() throws Exception {
+		Socket conn = handshaker.accept();
+
+		boolean allConnected = true;
+		for (PeerConnection pc : connections) {
+			if (!pc.isConnected()) {
+				if (pc.getIP().equalsIgnoreCase(conn.getInetAddress().toString())) {
+					pc.giveConnection(conn);
+				} else {
+					allConnected = false;
+				}
+			}
+		}
+
+		if (allConnected) {
+			System.out.println("Game is ready!");
+		} else {
+			listen();
 		}
 	}
 }
