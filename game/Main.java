@@ -1,4 +1,4 @@
-package game2019;
+package game;
 
 import java.net.ConnectException;
 import java.net.ServerSocket;
@@ -6,6 +6,7 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.sun.security.ntlm.Server;
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.stage.Stage;
@@ -22,6 +23,7 @@ public class Main extends Application {
 	public static final String[] playerAddresses = {
 			"10.24.65.135", // Oscar
 			"10.24.4.26", // Frederik
+			"10.24.65.147" // Jonas
 	};
 
 	public static final int size = 20; 
@@ -210,12 +212,14 @@ public class Main extends Application {
 	}
 
 	private static void connect() throws Exception {
+		ServerSocket handshaker = new ServerSocket(6666);
 		for (int i = 0; i < playerAddresses.length; i++) {
 			Socket conn;
 			try {
+				System.out.println("Attempting connection to: " + playerAddresses[i]);
 				conn = new Socket(playerAddresses[i], 6666);
 			} catch (ConnectException e) {
-				ServerSocket handshaker = new ServerSocket(6666);
+				System.out.println("Awating connection...");
 				conn = handshaker.accept();
 			}
 
