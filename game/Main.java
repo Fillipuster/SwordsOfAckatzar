@@ -23,7 +23,7 @@ public class Main extends Application {
 	public static final String name = "Jones Bones";
 	public static final String[] playerAddresses = {
 			"10.24.65.135", // Oscar
-			//"10.24.4.26", // Frederik
+			"10.24.4.26", // Frederik
 			//"10.24.65.147" // Jonas
 	};
 
@@ -228,7 +228,9 @@ public class Main extends Application {
 	}
 
 	public static void listen() throws Exception {
+		System.out.println("Listening...");
 		Socket conn = handshaker.accept();
+		System.out.println("Heard: " + conn.getInetAddress().getHostAddress());
 
 		boolean allConnected = true;
 		for (PeerConnection pc : connections) {

@@ -1,13 +1,12 @@
 package game;
 
+import com.sun.xml.internal.ws.policy.privateutil.PolicyUtils;
+
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.net.ConnectException;
-import java.net.InetAddress;
-import java.net.ServerSocket;
-import java.net.Socket;
+import java.net.*;
 
 public class PeerConnection extends Thread {
 
@@ -18,25 +17,37 @@ public class PeerConnection extends Thread {
         this.ip = ip;
     }
 
+    private void connect() {
+        try {
+            System.out.println("Connecting to: " + ip);
+            conn = new Socket();
+            conn.connect(new InetSocketAddress(ip, 6666), 500);
+        } catch (SocketTimeoutException e) {
+            if (isConnected()) {
+                return;
+            } else {
+                connect();
+            }
+        } catch (IOException e) {}
+    }
+
     @Override
     public void run() {
-        try {
-            while (!isConnected()) {
-                conn = new Socket(ip, 6666);
-            }
+        connect();
 
+        try {
             BufferedReader input = new BufferedReader(new InputStreamReader(conn.getInputStream()));
             DataOutputStream output = new DataOutputStream(conn.getOutputStream());
-            while(true) {
+            while (true) {
                 output.writeBytes(Main.name + "\n");
-                String str  = input.readLine();
+                String str = input.readLine();
                 if (str != null) {
                     System.out.println(conn.getInetAddress().toString() + " is called: " + str);
                 }
                 Thread.sleep(2000);
             }
         } catch (Exception e) {
-            System.out.println("HIV");
+            System.out.println("AIDS");
         }
     }
 
