@@ -1,6 +1,9 @@
 package game;
 
+import java.io.BufferedReader;
+import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.ConnectException;
 import java.net.InetAddress;
 import java.net.ServerSocket;
@@ -17,21 +20,23 @@ public class PeerConnection extends Thread {
 
     @Override
     public void run() {
-        while (!isConnected()) {
-            try {
+        try {
+            while (!isConnected()) {
                 conn = new Socket(ip, 6666);
-            } catch (IOException e) {
-                System.out.println("Klamydia.");
             }
-        }
 
-        while(true) {
-            try {
-                System.out.println("Active conection with: " + ip);
+            BufferedReader input = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+            DataOutputStream output = new DataOutputStream(conn.getOutputStream());
+            while(true) {
+                output.writeBytes(Main.name + "\n");
+                String str  = input.readLine();
+                if (str != null) {
+                    System.out.println(conn.getInetAddress().toString() + " is called: " + str);
+                }
                 Thread.sleep(2000);
-            } catch (InterruptedException e) {
-                System.out.println("Whatever");
             }
+        } catch (Exception e) {
+            System.out.println("HIV");
         }
     }
 
