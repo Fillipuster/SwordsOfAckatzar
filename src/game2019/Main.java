@@ -1,5 +1,8 @@
 package game2019;
 
+import java.net.ConnectException;
+import java.net.ServerSocket;
+import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,8 +15,14 @@ import javafx.scene.image.*;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.text.*;
+import sun.net.ConnectionResetException;
 
 public class Main extends Application {
+
+	public static final String[] playerAddresses = {
+			"10.24.65.135", // Oscar
+			"10.24.4.26", // Frederik
+	};
 
 	public static final int size = 20; 
 	public static final int scene_height = size * 20 + 100;
@@ -195,8 +204,24 @@ public class Main extends Application {
 		return null;
 	}
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws Exception {
+		connect();
 		launch(args);
+	}
+
+	private static void connect() throws Exception {
+		for (int i = 0; i < playerAddresses.length; i++) {
+			Socket conn;
+			try {
+				conn = new Socket(playerAddresses[i], 6666);
+			} catch (ConnectException e) {
+				ServerSocket handshaker = new ServerSocket(6666);
+				conn = handshaker.accept();
+			}
+
+			PeerConnection peer = new PeerConnection(conn);
+			peer.start();
+		}
 	}
 }
 
