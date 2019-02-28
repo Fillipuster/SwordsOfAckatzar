@@ -36,7 +36,11 @@ public class PeerConnection extends Thread {
     }
 
     public boolean isConnected() {
-        return conn.isConnected();
+        if (conn == null) {
+            return false;
+        } else {
+            return conn.isConnected();
+        }
     }
 
     public void giveConnection(Socket conn) {
