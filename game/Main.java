@@ -234,6 +234,8 @@ public class Main extends Application {
 
 		boolean allConnected = true;
 		for (PeerConnection pc : connections) {
+			System.out.println(pc.getIP() + ": " + pc.isConnected());
+
 			if (!pc.isConnected()) {
 				if (pc.getIP().equalsIgnoreCase(conn.getInetAddress().getHostAddress())) {
 					pc.giveConnection(conn);

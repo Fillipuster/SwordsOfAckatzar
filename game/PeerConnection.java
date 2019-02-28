@@ -19,16 +19,18 @@ public class PeerConnection extends Thread {
 
     private void connect() {
         try {
-            System.out.println("Connecting to: " + ip);
-            conn = new Socket();
-            conn.connect(new InetSocketAddress(ip, 6666), 500);
-        } catch (SocketTimeoutException e) {
-            if (isConnected()) {
-                return;
+            if (!isConnected()) {
+                System.out.println("Connecting to: " + ip);
+                conn = new Socket();
+                conn.connect(new InetSocketAddress(ip, 6666), 500);
             } else {
-                connect();
+                return;
             }
-        } catch (IOException e) {}
+        } catch (Exception e) {
+            System.out.println(e.getClass() + "::" + e.getMessage());
+        }
+
+        connect();
     }
 
     @Override
