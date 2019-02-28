@@ -20,11 +20,11 @@ import javafx.scene.text.*;
 
 public class Main extends Application {
 
-	public static final String name = "Jonas";
+	public static final String name = "Jones Bones";
 	public static final String[] playerAddresses = {
-			//"10.24.65.135", // Oscar
+			"10.24.65.135", // Oscar
 			//"10.24.4.26", // Frederik
-			"10.24.65.147" // Jonas
+			//"10.24.65.147" // Jonas
 	};
 
 	public static final int size = 20; 
@@ -233,7 +233,7 @@ public class Main extends Application {
 		boolean allConnected = true;
 		for (PeerConnection pc : connections) {
 			if (!pc.isConnected()) {
-				if (pc.getIP().equalsIgnoreCase(conn.getInetAddress().toString())) {
+				if (pc.getIP().equalsIgnoreCase(conn.getInetAddress().getHostAddress())) {
 					pc.giveConnection(conn);
 				} else {
 					allConnected = false;
