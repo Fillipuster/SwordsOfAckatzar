@@ -33,10 +33,7 @@ public class PeerConnection extends Thread {
         connect();
     }
 
-    @Override
-    public void run() {
-        connect();
-
+    private void communicate() {
         try {
             BufferedReader input = new BufferedReader(new InputStreamReader(conn.getInputStream()));
             DataOutputStream output = new DataOutputStream(conn.getOutputStream());
@@ -51,6 +48,12 @@ public class PeerConnection extends Thread {
         } catch (Exception e) {
             System.out.println("AIDS");
         }
+    }
+
+    @Override
+    public void run() {
+        connect();
+        communicate();
     }
 
     public boolean isConnected() {

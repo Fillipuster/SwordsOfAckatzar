@@ -20,11 +20,11 @@ import javafx.scene.text.*;
 
 public class Main extends Application {
 
-	public static final String name = "SværetAfFlæsk";
+	public static final String name = "Jonas Bones";
 	public static final String[] playerAddresses = {
 			"10.24.65.135", // Oscar
 			//"10.24.4.26", // Frederik
-			"10.24.65.147" // Jonas
+			//"10.24.65.147" // Jonas
 	};
 
 	public static final int size = 20; 
@@ -208,48 +208,52 @@ public class Main extends Application {
 	}
 
 	public static void main(String[] args) throws Exception {
-		Commander cmd = new Commander(new BufferedReader(new InputStreamReader(System.in)));
+		new Commander(new BufferedReader(new InputStreamReader(System.in)));
 		connect();
 		launch(args);
 	}
 
-	private static ServerSocket handshaker;
-	private static ArrayList<PeerConnection> connections = new ArrayList<>();
+	/*
+		Main logic of custom modifications...
+	 */
 
-	private static void connect() throws Exception {
-		handshaker = new ServerSocket(6666);
-		for (int i = 0; i < playerAddresses.length; i++) {
-			PeerConnection peer = new PeerConnection(playerAddresses[i]);
-			connections.add(peer);
-			peer.start();
+	private static ArrayList<PeerSender> peerSenders = new ArrayList<>();
+	private static ArrayList<PeerReceiver> peerReceivers = new ArrayList<>();
+
+	private static void connect() {
+		for (String ip : playerAddresses) {
+			PeerSender sender = new PeerSender(ip);
+			PeerReceiver receiver = new PeerReceiver(ip);
+
+			sender.setReceiver(receiver);
+			receiver.setSender(sender);
+
+			peerSenders.add(sender);
+			peerReceivers.add(receiver);
+
+			sender.start();
+			receiver.start();
 		}
 
-		listen();
-	}
+		boolean allConnected = false;
+		while (!allConnected) {
+			allConnected = true;
 
-	public static void listen() throws Exception {
-		System.out.println("Listening...");
-		Socket conn = handshaker.accept();
-		System.out.println("Heard: " + conn.getInetAddress().getHostAddress());
-
-		boolean allConnected = true;
-		for (PeerConnection pc : connections) {
-			System.out.println(pc.getIP() + ": " + pc.isConnected());
-
-			if (!pc.isConnected()) {
-				if (pc.getIP().equalsIgnoreCase(conn.getInetAddress().getHostAddress())) {
-					pc.giveConnection(conn);
-				} else {
+			for (PeerReceiver pr : peerReceivers) {
+				if (!pr.isConnected()) {
 					allConnected = false;
+					continue;
+				}
+			}
+
+			for (PeerSender ps : peerSenders) {
+				if (!ps.isConnected()) {
+					allConnected = false;
+					continue;
 				}
 			}
 		}
-
-		if (allConnected) {
-			System.out.println("Game is ready!");
-		} else {
-			listen();
-		}
 	}
+
 }
 
