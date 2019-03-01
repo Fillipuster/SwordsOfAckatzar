@@ -22,6 +22,7 @@ public class PeerReceiver extends Thread {
         try {
             System.out.println("Listening for " + ip + "...");
             handshaker.accept();
+            System.out.println("Heard " + ip + "!");
         } catch (IOException e) {
             System.out.println(String.format("PeerReceiver[%s]::%s::%s", ip, e.getClass(), e.getMessage()));
         }

@@ -5,6 +5,7 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.Socket;
+import java.net.SocketTimeoutException;
 
 public class PeerSender extends Thread {
 
@@ -23,10 +24,12 @@ public class PeerSender extends Thread {
                 System.out.println("Calling " + ip + "...");
                 connection = new Socket();
                 connection.connect(new InetSocketAddress(ip, 6666), 2000);
+                System.out.println("Call connected with " + ip + "!");
             } else {
                 return;
             }
-        } catch (IOException e) {
+        } catch (SocketTimeoutException e) {}
+        catch (IOException e) {
             System.out.println(String.format("PeerSender[%s]::%s::%s", ip, e.getClass(), e.getMessage()));
         }
 
