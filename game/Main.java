@@ -238,6 +238,7 @@ public class Main extends Application {
 
 	private static void createReceiver(Socket connection) {
 		PeerReceiver receiver = new PeerReceiver(connection);
+		receiver.start();
 		peerReceivers.add(receiver);
 	}
 

@@ -41,7 +41,7 @@ public class PeerSender extends Thread {
             DataOutputStream output = new DataOutputStream(connection.getOutputStream());
             while(true) {
                 output.writeBytes(Main.name + "\n");
-                sleep(2000);
+                sleep(1337);
             }
         } catch (IOException e) {
             System.out.println(String.format("PeerSender[%s]::%s::%s", ip, e.getClass(), e.getMessage()));
