@@ -20,7 +20,6 @@ public class PeerSender extends Thread {
 
     private void connect() {
         try {
-            System.out.println("Connect method: " + connection);
             if (!isConnected()) {
                 System.out.println("Calling " + ip + "...");
                 connection = new Socket();
