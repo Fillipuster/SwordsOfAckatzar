@@ -23,6 +23,7 @@ public class PeerSender extends Thread {
                 connection = new Socket();
                 connection.connect(new InetSocketAddress(ip, 6666), 2000);
                 System.out.println("Call connected with " + ip + "!");
+                Main.giveConnection(connection);
             } else {
                 return;
             }

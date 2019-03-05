@@ -24,7 +24,7 @@ public class Main extends Application {
 	public static final String[] playerAddresses = {
 			"10.24.67.191", // Oscar
 			"10.24.4.96", // Frederik
-			//"10.24.65.119" // Jonas
+			//"10.24.65.119", // Jonas
 	};
 
 	public static final int size = 20; 
@@ -220,8 +220,7 @@ public class Main extends Application {
 
 	private static ArrayList<PeerSender> peerSenders = new ArrayList<>();
 	private static ArrayList<PeerReceiver> peerReceivers = new ArrayList<>();
-
-	public static ServerSocket handshaker;
+	private static ServerSocket handshaker;
 
 	private static void connect() {
 		for (String ip : playerAddresses) {
@@ -229,6 +228,11 @@ public class Main extends Application {
 			peerSenders.add(sender);
 			sender.start();
 		}
+	}
+
+	private static void createReceiver(Socket connection) {
+		PeerReceiver receiver = new PeerReceiver(connection);
+		peerReceivers.add(receiver);
 	}
 
 	private static void handshake() {
@@ -241,8 +245,7 @@ public class Main extends Application {
 				}
 			}
 
-			PeerReceiver receiver = new PeerReceiver(connection);
-			peerReceivers.add(receiver);
+			createReceiver(connection);
 		} catch (IOException e) {
 			System.out.println(String.format("Main::%s::%s", e.getClass(), e.getMessage()));
 		}
@@ -255,6 +258,15 @@ public class Main extends Application {
 	private static boolean allConnected() {
 		for (PeerSender ps : peerSenders) if (!ps.isConnected()) return false;
 		return true;
+	}
+
+	public static void giveConnection(Socket connection) {
+		try {
+			handshaker.close();
+			createReceiver(connection);
+		} catch (IOException e) {
+			System.out.println(String.format("Main::%s::%s", e.getClass(), e.getMessage()));
+		}
 	}
 
 }
