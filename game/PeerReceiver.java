@@ -1,8 +1,6 @@
 package game;
 
-import java.io.DataOutputStream;
 import java.io.IOException;
-import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 
@@ -29,7 +27,7 @@ public class PeerReceiver extends Thread {
     }
 
     private void receive() {
-        // Receive
+        while (true);
     }
 
     private void donate() {
