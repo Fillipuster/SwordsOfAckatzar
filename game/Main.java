@@ -192,6 +192,8 @@ public class Main extends Application {
 			}
 		}
 		scoreList.setText(getScoreList());
+
+		Main.broadcast(new Command(Command.Type.MOVE, new String[]{Integer.toString(x), Integer.toString(y), direction}));
 	}
 
 	public String getScoreList() {
@@ -279,6 +281,7 @@ public class Main extends Application {
 	}
 
 	private static void broadcast(Command cmd) {
+		System.out.println("Attempting to broadcast cmd: " + cmd.toString());
 		for (PeerSender sender : peerSenders) {
 			sender.queueCommand(cmd);
 		}
