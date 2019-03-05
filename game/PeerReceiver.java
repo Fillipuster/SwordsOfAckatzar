@@ -19,7 +19,7 @@ public class PeerReceiver extends Thread {
 
             while (true) {
                 String str = input.readLine();
-                System.out.println(String.format("%s says: %s", connection.getInetAddress().getHostAddress(), str));
+                Main.receiveCommand(connection.getInetAddress(), Command.decode(str));
             }
         } catch (IOException e) {}
     }

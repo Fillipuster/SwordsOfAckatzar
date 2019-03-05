@@ -1,16 +1,18 @@
 package game;
 
-import java.beans.ExceptionListener;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
+import java.util.ArrayDeque;
+import java.util.Queue;
 
 public class PeerSender extends Thread {
 
     public Socket connection;
     private String ip;
+    private Queue<String> cmdQueue = new ArrayDeque();
 
     public PeerSender(String ip) {
         this.ip = ip;
@@ -40,13 +42,12 @@ public class PeerSender extends Thread {
         try {
             DataOutputStream output = new DataOutputStream(connection.getOutputStream());
             while(true) {
-                output.writeBytes(Main.name + "\n");
-                sleep(1337);
+                if (!cmdQueue.isEmpty()) {
+                    output.writeBytes(cmdQueue.poll());
+                }
             }
         } catch (IOException e) {
             System.out.println(String.format("PeerSender[%s]::%s::%s", ip, e.getClass(), e.getMessage()));
-        } catch (InterruptedException e) {
-            System.out.println("Ew!");
         }
     }
 
@@ -54,6 +55,10 @@ public class PeerSender extends Thread {
     public void run() {
         connect();
         send();
+    }
+
+    public void queueCommand(Command cmd) {
+        cmdQueue.add(cmd.toString() + "\n");
     }
 
     public boolean isConnected() {

@@ -3,6 +3,7 @@ package game;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
@@ -28,7 +29,7 @@ public class Main extends Application {
 			//"10.24.65.119", // Jonas
 	};
 
-	public static final int size = 20; 
+	public static final int size = 20;
 	public static final int scene_height = size * 20 + 100;
 	public static final int scene_width = size * 20 + 200;
 
@@ -75,6 +76,8 @@ public class Main extends Application {
 
 	@Override
 	public void start(Stage primaryStage) {
+		Main.broadcast(new Command(Command.Type.JOIN, new String[]{Main.name}));
+
 		try {
 			GridPane grid = new GridPane();
 			grid.setHgap(10);
@@ -209,7 +212,6 @@ public class Main extends Application {
 	}
 
 	public static void main(String[] args) throws Exception {
-//		new Commander(new BufferedReader(new InputStreamReader(System.in)));
 		connect();
 		handshake();
 		launch(args);
@@ -274,6 +276,16 @@ public class Main extends Application {
 		} catch (IOException e) {
 			System.out.println(String.format("Main:giveConnection():%s::%s", e.getClass(), e.getMessage()));
 		}
+	}
+
+	private static void broadcast(Command cmd) {
+		for (PeerSender sender : peerSenders) {
+			sender.queueCommand(cmd);
+		}
+	}
+
+	public static void receiveCommand(InetAddress sender, Command cmd) {
+		System.out.println("Received command from " + sender.getHostAddress() + " stating:\n" + cmd.toString());
 	}
 
 }
