@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -223,6 +224,11 @@ public class Main extends Application {
 	private static ServerSocket handshaker;
 
 	private static void connect() {
+		try {
+			handshaker = new ServerSocket(6666);
+		} catch (IOException e) {
+			System.out.println(String.format("Main:connect():%s::%s", e.getClass(), e.getMessage()));
+		}
 		for (String ip : playerAddresses) {
 			PeerSender sender = new PeerSender(ip);
 			peerSenders.add(sender);
@@ -237,7 +243,6 @@ public class Main extends Application {
 
 	private static void handshake() {
 		try {
-			handshaker = new ServerSocket(6666);
 			Socket connection = handshaker.accept();
 			for (PeerSender ps : peerSenders) {
 				if (ps.getIP().equalsIgnoreCase(connection.getInetAddress().getHostAddress())) {
@@ -246,8 +251,8 @@ public class Main extends Application {
 			}
 
 			createReceiver(connection);
-		} catch (IOException e) {
-			System.out.println(String.format("Main::%s::%s", e.getClass(), e.getMessage()));
+		} catch (SocketException e) {} catch (IOException e) {
+			System.out.println(String.format("Main:handshake():%s::%s", e.getClass(), e.getMessage()));
 		}
 
 		if (!allConnected()) {
@@ -265,7 +270,7 @@ public class Main extends Application {
 			handshaker.close();
 			createReceiver(connection);
 		} catch (IOException e) {
-			System.out.println(String.format("Main::%s::%s", e.getClass(), e.getMessage()));
+			System.out.println(String.format("Main:giveConnection():%s::%s", e.getClass(), e.getMessage()));
 		}
 	}
 
