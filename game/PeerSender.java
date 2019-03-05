@@ -6,6 +6,7 @@ import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
 import java.util.ArrayDeque;
+import java.util.NoSuchElementException;
 import java.util.Queue;
 
 public class PeerSender extends Thread {
@@ -42,12 +43,19 @@ public class PeerSender extends Thread {
         try {
             DataOutputStream output = new DataOutputStream(connection.getOutputStream());
             while(true) {
+                sleep(10);
                 if (!cmdQueue.isEmpty()) {
+                    System.out.println("Sending...");
                     output.writeBytes(cmdQueue.poll());
+                    output.flush();
                 }
             }
         } catch (IOException e) {
             System.out.println(String.format("PeerSender[%s]::%s::%s", ip, e.getClass(), e.getMessage()));
+        } catch (NoSuchElementException e) {
+            System.out.println("Command queue is empty.");
+        } catch (InterruptedException e) {
+            System.out.println("Ad!");
         }
     }
 
@@ -59,6 +67,7 @@ public class PeerSender extends Thread {
 
     public void queueCommand(Command cmd) {
         cmdQueue.add(cmd.toString() + "\n");
+        System.out.println(cmdQueue);
     }
 
     public boolean isConnected() {
