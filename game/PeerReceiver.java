@@ -18,10 +18,8 @@ public class PeerReceiver extends Thread {
             BufferedReader input = new BufferedReader(new InputStreamReader(connection.getInputStream()));
 
             while (true) {
-             String str = input.readLine();
-             if (str != null && !str.isEmpty()) {
-                 System.out.println(String.format("%s says: %s", connection.getInetAddress().getHostAddress(), str));
-             }
+                String str = input.readLine();
+                System.out.println(String.format("%s says: %s", connection.getInetAddress().getHostAddress(), str));
             }
         } catch (IOException e) {}
     }
