@@ -24,7 +24,7 @@ public class Main extends Application {
 	public static final String[] playerAddresses = {
 			"10.24.67.191", // Oscar
 			//"10.24.4.26", // Frederik
-			//"10.24.65.147" // Jonas
+			//"10.24.65.119" // Jonas
 	};
 
 	public static final int size = 20; 
