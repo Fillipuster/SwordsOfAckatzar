@@ -1,8 +1,8 @@
 package game;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
-import java.net.ConnectException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
@@ -208,8 +208,9 @@ public class Main extends Application {
 	}
 
 	public static void main(String[] args) throws Exception {
-		new Commander(new BufferedReader(new InputStreamReader(System.in)));
+//		new Commander(new BufferedReader(new InputStreamReader(System.in)));
 		connect();
+		handshake();
 		launch(args);
 	}
 
@@ -220,39 +221,40 @@ public class Main extends Application {
 	private static ArrayList<PeerSender> peerSenders = new ArrayList<>();
 	private static ArrayList<PeerReceiver> peerReceivers = new ArrayList<>();
 
+	public static ServerSocket handshaker;
+
 	private static void connect() {
 		for (String ip : playerAddresses) {
 			PeerSender sender = new PeerSender(ip);
-			PeerReceiver receiver = new PeerReceiver(ip);
-
-			sender.setReceiver(receiver);
-			receiver.setSender(sender);
-
 			peerSenders.add(sender);
-			peerReceivers.add(receiver);
-
 			sender.start();
-			receiver.start();
 		}
+	}
 
-		boolean allConnected = false;
-		while (!allConnected) {
-			allConnected = true;
-
-			for (PeerReceiver pr : peerReceivers) {
-				if (!pr.isConnected()) {
-					allConnected = false;
-					continue;
-				}
-			}
-
+	private static void handshake() {
+		try {
+			handshaker = new ServerSocket(6666);
+			Socket connection = handshaker.accept();
 			for (PeerSender ps : peerSenders) {
-				if (!ps.isConnected()) {
-					allConnected = false;
-					continue;
+				if (ps.getIP().equalsIgnoreCase(connection.getInetAddress().getHostAddress())) {
+					ps.giveConnection(connection);
 				}
 			}
+
+			PeerReceiver receiver = new PeerReceiver(connection);
+			peerReceivers.add(receiver);
+		} catch (IOException e) {
+			System.out.println(String.format("Main::%s::%s", e.getClass(), e.getMessage()));
 		}
+
+		if (!allConnected()) {
+			handshake();
+		}
+	}
+
+	private static boolean allConnected() {
+		for (PeerSender ps : peerSenders) if (!ps.isConnected()) return false;
+		return true;
 	}
 
 }

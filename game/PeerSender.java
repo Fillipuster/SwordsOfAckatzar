@@ -10,8 +10,6 @@ import java.net.SocketTimeoutException;
 public class PeerSender extends Thread {
 
     public Socket connection;
-
-    private PeerReceiver receiver;
     private String ip;
 
     public PeerSender(String ip) {
@@ -47,23 +45,9 @@ public class PeerSender extends Thread {
         }
     }
 
-    private void donate() {
-        if (receiver != null) {
-            try {
-                receiver.handshaker.close();
-                receiver.giveConnection(connection);
-            } catch (IOException e) {
-                System.out.println(String.format("PeerSender[%s]::%s::%s", ip, e.getClass(), e.getMessage()));
-            }
-        } else {
-            donate();
-        }
-    }
-
     @Override
     public void run() {
         connect();
-        donate();
         send();
     }
 
@@ -75,8 +59,8 @@ public class PeerSender extends Thread {
         this.connection = connection;
     }
 
-    public void setReceiver(PeerReceiver receiver) {
-        this.receiver = receiver;
+    public String getIP() {
+        return ip;
     }
 
 }
