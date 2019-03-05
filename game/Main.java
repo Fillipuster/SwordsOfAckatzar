@@ -249,6 +249,7 @@ public class Main extends Application {
 	private static void handshake() {
 		try {
 			Socket connection = handshaker.accept();
+			System.out.println("Heard " + connection.getInetAddress().getHostAddress());
 			for (PeerSender ps : peerSenders) {
 				if (ps.getIP().equalsIgnoreCase(connection.getInetAddress().getHostAddress())) {
 					ps.giveConnection(connection);
