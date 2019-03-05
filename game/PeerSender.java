@@ -29,7 +29,8 @@ public class PeerSender extends Thread {
             }
         } catch (SocketTimeoutException e) {}
         catch (IOException e) {
-            System.out.println(String.format("PeerSender[%s]::%s::%s", ip, e.getClass(), e.getMessage()));
+            //System.out.println(String.format("PeerSender[%s]::%s::%s", ip, e.getClass(), e.getMessage()));
+            e.printStackTrace();
         }
 
         connect();

@@ -268,6 +268,7 @@ public class Main extends Application {
 	public static void giveConnection(Socket connection) {
 		try {
 			handshaker.close();
+			handshaker = new ServerSocket(6666);
 			createReceiver(connection);
 		} catch (IOException e) {
 			System.out.println(String.format("Main:giveConnection():%s::%s", e.getClass(), e.getMessage()));
