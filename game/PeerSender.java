@@ -24,12 +24,12 @@ public class PeerSender extends Thread {
     }
 
     private void send() throws IOException, InterruptedException {
-        if (!cmdStr.isEmpty()) {
-            output.writeBytes(cmdStr + "\n");
-            output.flush();
+        while (true) {
+            if (!cmdStr.isEmpty()) {
+                output.writeBytes(cmdStr + "\n");
+                output.flush();
+            }
         }
-
-        send(); // Recursive call.
     }
 
     @Override
