@@ -22,8 +22,12 @@ public class PeerSender extends Thread {
         output = new DataOutputStream(connection.getOutputStream());
     }
 
-    private void send() {
-        // Recursively loop to send data.
+    private void send() throws IOException, InterruptedException {
+        output.writeBytes(Main.name + "\n");
+        output.flush();
+        sleep(1000);
+
+        send(); // Recursive call.
     }
 
     @Override
@@ -32,6 +36,8 @@ public class PeerSender extends Thread {
             setup();
             send();
         } catch (IOException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
             e.printStackTrace();
         }
     }

@@ -30,7 +30,7 @@ public class ConnectionController {
         connector.start();
         connectors.add(connector);
     }
-    
+
     public void handshake() {
         Handshaker handshaker = new Handshaker();
         handshaker.start();
