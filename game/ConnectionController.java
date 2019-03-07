@@ -31,7 +31,9 @@ public class ConnectionController {
         connectors.add(connector);
     }
 
+    private int handshakerAmt = 1;
     public void handshake() {
+        System.out.println("Creating handshaker: " + Integer.toString(handshakerAmt++));
         Handshaker handshaker = new Handshaker();
         handshaker.start();
     }
