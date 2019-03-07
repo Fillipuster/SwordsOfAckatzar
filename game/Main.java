@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.stage.Stage;
 import javafx.scene.Scene;
@@ -19,7 +20,7 @@ public class Main extends Application {
 	public static final String name = "Jonas Bones";
 	public static final String[] playerAddresses = {
 			"10.24.2.163", // Oscar
-			"10.24.2.203", // Frederik
+			//"10.24.2.203", // Frederik
 			"10.24.65.135", // Jonas
 	};
 
@@ -152,44 +153,14 @@ public class Main extends Application {
 	}
 
 	public void localPlayerMoved(int delta_x, int delta_y, String direction) {
+		int x = me.getXpos(), y = me.getYpos();
+		me.setXpos(x + delta_x);
+		me.setYpos(y + delta_y);
 		me.direction = direction;
-		int x = me.getXpos(),y = me.getYpos();
 
-		if (board[y+delta_y].charAt(x+delta_x)=='w') {
-			me.addPoints(-1);
-		}
-		else {
-			Player p = getPlayerAt(x+delta_x,y+delta_y);
-			if (p!=null) {
-              me.addPoints(10);
-              p.addPoints(-10);
-			} else {
-				me.addPoints(1);
+		ConnectionController.getInstance().broadcastCommand(new Command(CMDT.MOVE, new String[]{Integer.toString(x + delta_x), Integer.toString(y + delta_x), direction}));
 
-				fields[x][y].setGraphic(new ImageView(image_floor));
-				x+=delta_x;
-				y+=delta_y;
-
-				if (direction.equals("right")) {
-					fields[x][y].setGraphic(new ImageView(hero_right));
-				};
-				if (direction.equals("left")) {
-					fields[x][y].setGraphic(new ImageView(hero_left));
-				};
-				if (direction.equals("up")) {
-					fields[x][y].setGraphic(new ImageView(hero_up));
-				};
-				if (direction.equals("down")) {
-					fields[x][y].setGraphic(new ImageView(hero_down));
-				};
-
-				me.setXpos(x);
-				me.setYpos(y);
-			}
-		}
-		scoreList.setText(getScoreList());
-
-		ConnectionController.getInstance().broadcastCommand(new Command(CMDT.MOVE, new String[]{Integer.toString(x), Integer.toString(y), direction}));
+		updateGraphics();
 	}
 
 	public String getScoreList() {
@@ -209,35 +180,48 @@ public class Main extends Application {
 		return null;
 	}
 
+	public void updateGraphics() {
+		for (Player p : players) {
+			String direction = p.getDirection();
+			int x = p.getXpos(), y = p.getYpos();
+
+			if (direction.equals("right")) {
+				fields[x][y].setGraphic(new ImageView(hero_right));
+			};
+			if (direction.equals("left")) {
+				fields[x][y].setGraphic(new ImageView(hero_left));
+			};
+			if (direction.equals("up")) {
+				fields[x][y].setGraphic(new ImageView(hero_up));
+			};
+			if (direction.equals("down")) {
+				fields[x][y].setGraphic(new ImageView(hero_down));
+			};
+		}
+	}
+
+	public void addPlayer(Player ply) {
+		System.out.println("PLAYER " + ply.name + " JOINED!");
+		players.add(ply);
+		fxInstance.updateGraphics();
+	}
+
 	/*
 			Commands
 	 */
 	public static void cmdPlayerJoin(Player player) {
-		System.out.println("PLAYER " + player.name + " JOINED!");
-		players.add(player);
-		System.out.println(fxInstance);
-		System.out.println(fxInstance.fields);
-		System.out.println(fxInstance.fields[player.xpos]);
-		System.out.println(fxInstance.fields[player.xpos][player.ypos]);
-		System.out.println(hero_up);
-		fxInstance.fields[player.xpos][player.ypos].setGraphic(new ImageView(hero_up));
+		Platform.runLater(() -> fxInstance.addPlayer(player));
 	}
 
-	public static void cmdPlayerMove(int xpos, int ypos, String dir) {
+	public static void cmdPlayerMove(int xpos, int ypos, String direction) {
 		Player p = fxInstance.getPlayerAt(xpos, ypos);
 		if (p != null) {
-			fxInstance.fields[xpos][ypos].setGraphic(new ImageView(image_floor));
-			switch (dir) {
-				case "up":
-					fxInstance.fields[xpos][ypos+1].setGraphic(new ImageView(hero_up));
-				case "down":
-					fxInstance.fields[xpos][ypos-1].setGraphic(new ImageView(hero_down));
-				case "left":
-					fxInstance.fields[xpos-1][ypos].setGraphic(new ImageView(hero_left));
-				case "right":
-					fxInstance.fields[xpos+1][ypos].setGraphic(new ImageView(hero_right));
-			}
+			p.setXpos(xpos);
+			p.setYpos(ypos);
+			p.setDirection(direction);
 		}
+
+		Platform.runLater(() -> fxInstance.updateGraphics());
 	}
 
 	public static void main(String[] args) throws Exception {
