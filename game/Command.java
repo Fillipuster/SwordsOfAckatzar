@@ -24,7 +24,7 @@ public class Command {
             }
         }
 
-        return new Command(typeEnum, split);
+        return new Command(typeEnum, args);
     }
 
     private CMDT type;
