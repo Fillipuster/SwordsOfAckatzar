@@ -200,6 +200,10 @@ public class Main extends Application {
 		}
 	}
 
+	public void layFloor(int x, int y) {
+		fields[x][y].setGraphic(new ImageView(image_floor));
+	}
+
 	public void addPlayer(Player ply) {
 		System.out.println("PLAYER " + ply.name + " JOINED!");
 		players.add(ply);
@@ -214,8 +218,11 @@ public class Main extends Application {
 	}
 
 	public static void cmdPlayerMove(int xpos, int ypos, String direction) {
+
 		Player p = fxInstance.getPlayerAt(xpos, ypos);
 		if (p != null) {
+			Platform.runLater(() -> fxInstance.layFloor(xpos, ypos));
+
 			if (direction.equals("right")) {
 				p.setXpos(xpos + 1);
 				p.setYpos(ypos);
