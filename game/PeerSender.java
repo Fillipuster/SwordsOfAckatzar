@@ -13,7 +13,7 @@ public class PeerSender extends Thread {
 
     private Socket connection;
     private DataOutputStream output;
-    private String cmdStr = "";
+    private String cmdStr;
 
     public PeerSender(Socket connection) {
         this.connection = connection;
@@ -24,12 +24,14 @@ public class PeerSender extends Thread {
     }
 
     private void send() throws IOException, InterruptedException {
-        while (true) {
-            if (!cmdStr.isEmpty()) {
-                output.writeBytes(cmdStr + "\n");
-                output.flush();
-            }
+        sleep(10);
+        if (cmdStr != null) {
+            output.writeBytes(cmdStr + "\n");
+            output.flush();
+            cmdStr = null;
         }
+
+        send(); // Recursive call.
     }
 
     @Override
@@ -44,8 +46,8 @@ public class PeerSender extends Thread {
         }
     }
 
-    public void queueCmd(String cmd) {
-        cmdStr = cmd;
+    public void queueCommand(String command) {
+        cmdStr = command;
     }
 
 }
