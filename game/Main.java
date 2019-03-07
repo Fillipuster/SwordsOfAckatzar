@@ -3,10 +3,7 @@ package game;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.net.InetAddress;
-import java.net.ServerSocket;
-import java.net.Socket;
-import java.net.SocketException;
+import java.net.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,7 +23,7 @@ public class Main extends Application {
 	public static final String[] playerAddresses = {
 			"10.24.67.191", // Oscar
 			"10.24.4.96", // Frederik
-			//"10.24.65.119", // Jonas
+			"10.24.65.119", // Jonas
 	};
 
 	public static final int size = 20;
@@ -193,7 +190,7 @@ public class Main extends Application {
 		}
 		scoreList.setText(getScoreList());
 
-		Main.broadcast(new Command(Command.Type.MOVE, new String[]{Integer.toString(x), Integer.toString(y), direction}));
+		//Main.broadcast(new Command(Command.Type.MOVE, new String[]{Integer.toString(x), Integer.toString(y), direction}));
 	}
 
 	public String getScoreList() {
@@ -215,7 +212,6 @@ public class Main extends Application {
 
 	public static void main(String[] args) throws Exception {
 		connect();
-		handshake();
 		launch(args);
 	}
 
@@ -223,73 +219,23 @@ public class Main extends Application {
 			Main logic of custom modifications...
 	 */
 
-	private static ArrayList<PeerSender> peerSenders = new ArrayList<>();
-	private static ArrayList<PeerReceiver> peerReceivers = new ArrayList<>();
-	private static ServerSocket handshaker;
-
 	private static void connect() {
-		try {
-			handshaker = new ServerSocket(6666);
-		} catch (IOException e) {
-			System.out.println(String.format("Main:connect():%s::%s", e.getClass(), e.getMessage()));
-		}
+		ConnectionController cc = ConnectionController.getInstance();
+
 		for (String ip : playerAddresses) {
-			PeerSender sender = new PeerSender(ip);
-			peerSenders.add(sender);
-			sender.start();
-		}
-	}
-
-	private static void createReceiver(Socket connection) {
-		PeerReceiver receiver = new PeerReceiver(connection);
-		receiver.start();
-		peerReceivers.add(receiver);
-	}
-
-	private static void handshake() {
-		try {
-			Socket connection = handshaker.accept();
-			System.out.println("Heard " + connection.getInetAddress().getHostAddress());
-			for (PeerSender ps : peerSenders) {
-				if (ps.getIP().equalsIgnoreCase(connection.getInetAddress().getHostAddress())) {
-					ps.giveConnection(connection);
+			try {
+				InetAddress inet = InetAddress.getByName(ip);
+				if (!InetAddress.getLocalHost().equals(inet)) {
+					cc.addPeer(inet);
 				}
+			} catch (UnknownHostException e) {
+				System.out.println("Host error for IP: " + ip);
+				e.printStackTrace();
 			}
-
-			createReceiver(connection);
-		} catch (SocketException e) {} catch (IOException e) {
-			System.out.println(String.format("Main:handshake():%s::%s", e.getClass(), e.getMessage()));
 		}
 
-		if (!allConnected()) {
-			handshake();
-		}
-	}
-
-	private static boolean allConnected() {
-		for (PeerSender ps : peerSenders) if (!ps.isConnected()) return false;
-		return true;
-	}
-
-	public static void giveConnection(Socket connection) {
-		try {
-			handshaker.close();
-			handshaker = new ServerSocket(6666);
-			createReceiver(connection);
-		} catch (IOException e) {
-			System.out.println(String.format("Main:giveConnection():%s::%s", e.getClass(), e.getMessage()));
-		}
-	}
-
-	private static void broadcast(Command cmd) {
-		System.out.println("Attempting to broadcast cmd: " + cmd.toString());
-		for (PeerSender sender : peerSenders) {
-			sender.queueCommand(cmd);
-		}
-	}
-
-	public static void receiveCommand(InetAddress sender, Command cmd) {
-		System.out.println("Received command from " + sender.getHostAddress() + " stating:\n" + cmd.toString());
+		cc.handshake();
+		while (!cc.allConnected());
 	}
 
 }

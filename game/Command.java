@@ -1,5 +1,6 @@
 package game;
 
+import java.util.HashMap;
 import java.util.concurrent.ConcurrentMap;
 
 public class Command {
