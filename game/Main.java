@@ -22,7 +22,7 @@ public class Main extends Application {
 	public static final String name = "Jonas Bones";
 	public static final String[] playerAddresses = {
 			"10.24.2.163", // Oscar
-			//"10.24.2.203", // Frederik
+			"10.24.2.203", // Frederik
 			"10.24.65.135", // Jonas
 	};
 
@@ -73,8 +73,7 @@ public class Main extends Application {
 
 	@Override
 	public void start(Stage primaryStage) {
-		//Main.broadcast(new Command(Command.Type.JOIN, new String[]{Main.name}));
-		ConnectionController.getInstance().broadcastCommand("Hello, my name is: " + Main.name);
+		ConnectionController.getInstance().broadcastCommand(new Command(CMDT.JOIN, new String[]{Main.name}));
 
 		try {
 			GridPane grid = new GridPane();
@@ -191,8 +190,7 @@ public class Main extends Application {
 		}
 		scoreList.setText(getScoreList());
 
-		//Main.broadcast(new Command(Command.Type.MOVE, new String[]{Integer.toString(x), Integer.toString(y), direction}
-		ConnectionController.getInstance().broadcastCommand("MOVE " + x + " " + y + " " + direction);
+		ConnectionController.getInstance().broadcastCommand(new Command(CMDT.MOVE, new String[]{Integer.toString(x), Integer.toString(y), direction}));
 	}
 
 	public String getScoreList() {

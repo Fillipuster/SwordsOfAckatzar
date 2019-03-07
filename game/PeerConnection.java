@@ -33,8 +33,8 @@ public class PeerConnection {
         return ip;
     }
 
-    public void command(String command) {
-        sender.queueCommand(command);
+    public void sendCommand(Command command) {
+        sender.sendCommand(command);
     }
 
 }

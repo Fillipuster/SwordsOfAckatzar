@@ -5,33 +5,32 @@ import java.util.concurrent.ConcurrentMap;
 
 public class Command {
 
-    public enum Type {
-        JOIN, MOVE, MITE; // Jeg glemmer det aldrig. MITE = POINT
-    }
+    private static CMDT[] arrTypes = {CMDT.JOIN, CMDT.MOVE, CMDT.MITE};
+    private static String[] arrStrings = {"JOIN", "MOVE", "MITE"};
 
     public static Command decode(String cmd) {
-        String[] args = cmd.split(";");
-        String cmdType = args[0];
-        args[0] = null;
+        String[] split = cmd.split(";");
+        String typeString = split[0];
+        CMDT typeEnum = CMDT.EROR;
 
-        switch (cmdType) {
-            case "JOIN":
-                return new Command(Type.JOIN, args);
-            case "MOVE":
-                return new Command(Type.MOVE, args);
-            case "MITE":
-                return new Command(Type.MITE, args);
-            default:
-                System.out.println("Received invalid command: " + cmdType);
+        String[] args = new String[split.length - 1];
+        for (int i = 0; i < args.length; i++) {
+            args[i] = split[i + 1];
         }
 
-        return null;
+        for (int i = 0; i < arrTypes.length; i++) {
+            if (typeString.equalsIgnoreCase(arrStrings[i])) {
+                typeEnum = arrTypes[i];
+            }
+        }
+
+        return new Command(typeEnum, split);
     }
 
-    private Type type;
+    private CMDT type;
     private String[] args;
 
-    public Command(Command.Type type, String[] args) {
+    public Command(CMDT type, String[] args) {
         this.type = type;
         this.args = args;
     }

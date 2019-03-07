@@ -46,8 +46,8 @@ public class PeerSender extends Thread {
         }
     }
 
-    public void queueCommand(String command) {
-        cmdStr = command;
+    public void sendCommand(Command command) {
+        cmdStr = command.toString();
     }
 
 }

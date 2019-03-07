@@ -58,9 +58,9 @@ public class ConnectionController {
         return true;
     }
 
-    public void broadcastCommand(String command) {
+    public void broadcastCommand(Command command) {
         for (PeerConnection pc : peerConnections) {
-            pc.command(command);
+            pc.sendCommand(command);
         }
     }
 
