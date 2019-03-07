@@ -13,7 +13,7 @@ public class PeerSender extends Thread {
 
     private Socket connection;
     private DataOutputStream output;
-    private String cmdStr;
+    private String cmdStr = "";
 
     public PeerSender(Socket connection) {
         this.connection = connection;
