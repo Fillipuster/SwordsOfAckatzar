@@ -17,7 +17,7 @@ import javafx.scene.text.*;
 
 public class Main extends Application {
 
-	public static final String name = "Jonas Bones";
+	public static final String name = "Jones Bones";
 	public static final String[] playerAddresses = {
 			"10.24.2.163", 	// Oscar
 			"10.24.2.203", 	// Frederik
@@ -158,7 +158,7 @@ public class Main extends Application {
 		me.setYpos(y + delta_y);
 		me.direction = direction;
 
-		ConnectionController.getInstance().broadcastCommand(new Command(CMDT.MOVE, new String[]{Integer.toString(x + delta_x), Integer.toString(y + delta_x), direction}));
+		ConnectionController.getInstance().broadcastCommand(new Command(CMDT.MOVE, new String[]{Integer.toString(x), Integer.toString(y), direction}));
 
 		updateGraphics();
 	}
@@ -216,8 +216,22 @@ public class Main extends Application {
 	public static void cmdPlayerMove(int xpos, int ypos, String direction) {
 		Player p = fxInstance.getPlayerAt(xpos, ypos);
 		if (p != null) {
-			p.setXpos(xpos);
-			p.setYpos(ypos);
+			if (direction.equals("right")) {
+				p.setXpos(xpos + 1);
+				p.setYpos(ypos);
+			};
+			if (direction.equals("left")) {
+				p.setXpos(xpos - 1);
+				p.setYpos(ypos);
+			};
+			if (direction.equals("up")) {
+				p.setXpos(xpos);
+				p.setYpos(ypos + 1);
+			};
+			if (direction.equals("down")) {
+				p.setXpos(xpos);
+				p.setYpos(ypos - 1);
+			};
 			p.setDirection(direction);
 		}
 
