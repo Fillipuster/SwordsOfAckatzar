@@ -73,7 +73,7 @@ public class Main extends Application {
 
 	@Override
 	public void start(Stage primaryStage) {
-		Main.broadcast(new Command(Command.Type.JOIN, new String[]{Main.name}));
+		//Main.broadcast(new Command(Command.Type.JOIN, new String[]{Main.name}));
 
 		try {
 			GridPane grid = new GridPane();
