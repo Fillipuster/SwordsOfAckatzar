@@ -33,4 +33,8 @@ public class PeerConnection {
         return ip;
     }
 
+    public void command(String cmd) {
+        sender.queueCmd(cmd);
+    }
+
 }

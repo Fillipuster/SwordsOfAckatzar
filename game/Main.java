@@ -74,6 +74,7 @@ public class Main extends Application {
 	@Override
 	public void start(Stage primaryStage) {
 		//Main.broadcast(new Command(Command.Type.JOIN, new String[]{Main.name}));
+		ConnectionController.getInstance().broadcastCommand("Hello, my name is: " + Main.name);
 
 		try {
 			GridPane grid = new GridPane();
@@ -190,7 +191,8 @@ public class Main extends Application {
 		}
 		scoreList.setText(getScoreList());
 
-		//Main.broadcast(new Command(Command.Type.MOVE, new String[]{Integer.toString(x), Integer.toString(y), direction}));
+		//Main.broadcast(new Command(Command.Type.MOVE, new String[]{Integer.toString(x), Integer.toString(y), direction}
+		ConnectionController.getInstance().broadcastCommand("MOVE " + x + " " + y + " " + direction);
 	}
 
 	public String getScoreList() {
