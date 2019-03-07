@@ -1,8 +1,5 @@
 package game;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.net.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -37,7 +34,7 @@ public class Main extends Application {
 	public static Player me;
 	public static List<Player> players = new ArrayList<Player>();
 
-	private Label[][] fields;
+	public Label[][] fields;
 	private TextArea scoreList;
 
 	private  String[] board = {    // 20x20
@@ -74,7 +71,6 @@ public class Main extends Application {
 	@Override
 	public void start(Stage primaryStage) {
 		setInstance(this);
-		ConnectionController.getInstance().broadcastCommand(new Command(CMDT.JOIN, new String[]{Main.name, "9", "4", "up"}));
 
 		try {
 			GridPane grid = new GridPane();
@@ -129,10 +125,10 @@ public class Main extends Application {
 
 			scene.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
 				switch (event.getCode()) {
-				case UP:    playerMoved(0,-1,"up");    break;
-				case DOWN:  playerMoved(0,+1,"down");  break;
-				case LEFT:  playerMoved(-1,0,"left");  break;
-				case RIGHT: playerMoved(+1,0,"right"); break;
+				case UP:    localPlayerMoved(0,-1,"up");    break;
+				case DOWN:  localPlayerMoved(0,+1,"down");  break;
+				case LEFT:  localPlayerMoved(-1,0,"left");  break;
+				case RIGHT: localPlayerMoved(+1,0,"right"); break;
 				default: break;
 				}
 			});
@@ -151,9 +147,11 @@ public class Main extends Application {
 		} catch(Exception e) {
 			e.printStackTrace();
 		}
+
+		ConnectionController.getInstance().broadcastCommand(new Command(CMDT.JOIN, new String[]{Main.name, "9", "4", "up"}));
 	}
 
-	public void playerMoved(int delta_x, int delta_y, String direction) {
+	public void localPlayerMoved(int delta_x, int delta_y, String direction) {
 		me.direction = direction;
 		int x = me.getXpos(),y = me.getYpos();
 
@@ -211,22 +209,17 @@ public class Main extends Application {
 		return null;
 	}
 
-	public static void main(String[] args) throws Exception {
-		connect();
-		launch(args);
-	}
-
 	/*
-			Game/Graphics
+			Commands
 	 */
-	private static Main fxInstance;
-	private static void setInstance(Main instance) {
-		fxInstance = instance;
-	}
-
 	public static void cmdPlayerJoin(Player player) {
 		System.out.println("PLAYER " + player.name + " JOINED!");
 		players.add(player);
+		System.out.println(fxInstance);
+		System.out.println(fxInstance.fields);
+		System.out.println(fxInstance.fields[player.xpos]);
+		System.out.println(fxInstance.fields[player.xpos][player.ypos]);
+		System.out.println(hero_up);
 		fxInstance.fields[player.xpos][player.ypos].setGraphic(new ImageView(hero_up));
 	}
 
@@ -245,6 +238,19 @@ public class Main extends Application {
 					fxInstance.fields[xpos+1][ypos].setGraphic(new ImageView(hero_right));
 			}
 		}
+	}
+
+	public static void main(String[] args) throws Exception {
+		connect();
+		launch(args);
+	}
+
+	/*
+			Game/Graphics
+	 */
+	private static Main fxInstance;
+	private static void setInstance(Main instance) {
+		fxInstance = instance;
 	}
 
 	/*
