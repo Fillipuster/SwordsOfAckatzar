@@ -19,8 +19,8 @@ public class Main extends Application {
 
 	public static final String name = "Jonas Bones";
 	public static final String[] playerAddresses = {
-			"10.24.2.163", // Oscar
-			//"10.24.2.203", // Frederik
+			"10.24.2.163", 	// Oscar
+			"10.24.2.203", 	// Frederik
 			"10.24.65.135", // Jonas
 	};
 
