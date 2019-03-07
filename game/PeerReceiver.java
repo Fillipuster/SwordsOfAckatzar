@@ -21,7 +21,7 @@ public class PeerReceiver extends Thread {
 
     private void receive() throws IOException {
         String in = input.readLine();
-        System.out.println(String.format("%s says: %s", connection.getInetAddress().getHostAddress(), Command.decode(in)));
+        ConnectionController.getInstance().receiveCommand(Command.decode(in));
 
         receive(); // Recursive call.
     }

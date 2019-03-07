@@ -225,6 +225,7 @@ public class Main extends Application {
 	}
 
 	public static void cmdPlayerJoin(Player player) {
+		System.out.println("PLAYER " + player.name + " JOINED!");
 		players.add(player);
 		fxInstance.fields[player.xpos][player.ypos].setGraphic(new ImageView(hero_up));
 	}
