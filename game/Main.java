@@ -39,7 +39,7 @@ public class Main extends Application {
 
 	private Label[][] fields;
 	private TextArea scoreList;
-	
+
 	private  String[] board = {    // 20x20
 			"wwwwwwwwwwwwwwwwwwww",
 			"w        ww        w",
@@ -63,7 +63,7 @@ public class Main extends Application {
 			"wwwwwwwwwwwwwwwwwwww"
 	};
 
-	
+
 	// -------------------------------------------
 	// | Maze: (0,0)              | Score: (1,0) |
 	// |-----------------------------------------|
@@ -73,7 +73,8 @@ public class Main extends Application {
 
 	@Override
 	public void start(Stage primaryStage) {
-		ConnectionController.getInstance().broadcastCommand(new Command(CMDT.JOIN, new String[]{Main.name}));
+		setInstance(this);
+		ConnectionController.getInstance().broadcastCommand(new Command(CMDT.JOIN, new String[]{Main.name, "9", "4", "up"}));
 
 		try {
 			GridPane grid = new GridPane();
@@ -83,12 +84,12 @@ public class Main extends Application {
 
 			Text mazeLabel = new Text("Maze:");
 			mazeLabel.setFont(Font.font("Arial", FontWeight.BOLD, 20));
-	
+
 			Text scoreLabel = new Text("Score:");
 			scoreLabel.setFont(Font.font("Arial", FontWeight.BOLD, 20));
 
 			scoreList = new TextArea();
-			
+
 			GridPane boardGrid = new GridPane();
 
 			image_wall  = new Image(getClass().getResourceAsStream("Image/wall4.png"),size,size,false,false);
@@ -106,7 +107,7 @@ public class Main extends Application {
 					case 'w':
 						fields[i][j] = new Label("", new ImageView(image_wall));
 						break;
-					case ' ':					
+					case ' ':
 						fields[i][j] = new Label("", new ImageView(image_floor));
 						break;
 					default: throw new Exception("Illegal field value: "+board[j].charAt(i) );
@@ -115,13 +116,13 @@ public class Main extends Application {
 				}
 			}
 			scoreList.setEditable(false);
-			
-			
-			grid.add(mazeLabel,  0, 0); 
-			grid.add(scoreLabel, 1, 0); 
+
+
+			grid.add(mazeLabel,  0, 0);
+			grid.add(scoreLabel, 1, 0);
 			grid.add(boardGrid,  0, 1);
 			grid.add(scoreList,  1, 1);
-						
+
 			Scene scene = new Scene(grid,scene_width,scene_height);
 			primaryStage.setScene(scene);
 			primaryStage.show();
@@ -135,16 +136,16 @@ public class Main extends Application {
 				default: break;
 				}
 			});
-			
+
             // Setting up standard players
-			
-			me = new Player("Orville",9,4,"up");
+
+			me = new Player(Main.name,9,4,"up");
 			players.add(me);
 			fields[9][4].setGraphic(new ImageView(hero_up));
 
-			Player harry = new Player("Harry",14,15,"up");
-			players.add(harry);
-			fields[14][15].setGraphic(new ImageView(hero_up));
+//			Player harry = new Player("Harry",14,15,"up");
+//			players.add(harry);
+//			fields[14][15].setGraphic(new ImageView(hero_up));
 
 			scoreList.setText(getScoreList());
 		} catch(Exception e) {
@@ -158,7 +159,7 @@ public class Main extends Application {
 
 		if (board[y+delta_y].charAt(x+delta_x)=='w') {
 			me.addPoints(-1);
-		} 
+		}
 		else {
 			Player p = getPlayerAt(x+delta_x,y+delta_y);
 			if (p!=null) {
@@ -166,7 +167,7 @@ public class Main extends Application {
               p.addPoints(-10);
 			} else {
 				me.addPoints(1);
-			
+
 				fields[x][y].setGraphic(new ImageView(image_floor));
 				x+=delta_x;
 				y+=delta_y;
@@ -216,9 +217,38 @@ public class Main extends Application {
 	}
 
 	/*
-			Main logic of custom modifications...
+			Game/Graphics
 	 */
+	private static Main fxInstance;
+	private static void setInstance(Main instance) {
+		fxInstance = instance;
+	}
 
+	public static void cmdPlayerJoin(Player player) {
+		players.add(player);
+		fxInstance.fields[player.xpos][player.ypos].setGraphic(new ImageView(hero_up));
+	}
+
+	public static void cmdPlayerMove(int xpos, int ypos, String dir) {
+		Player p = fxInstance.getPlayerAt(xpos, ypos);
+		if (p != null) {
+			fxInstance.fields[xpos][ypos].setGraphic(new ImageView(image_floor));
+			switch (dir) {
+				case "up":
+					fxInstance.fields[xpos][ypos+1].setGraphic(new ImageView(hero_up));
+				case "down":
+					fxInstance.fields[xpos][ypos-1].setGraphic(new ImageView(hero_down));
+				case "left":
+					fxInstance.fields[xpos-1][ypos].setGraphic(new ImageView(hero_left));
+				case "right":
+					fxInstance.fields[xpos+1][ypos].setGraphic(new ImageView(hero_right));
+			}
+		}
+	}
+
+	/*
+			Connection
+	 */
 	private static void connect() {
 		ConnectionController cc = ConnectionController.getInstance();
 

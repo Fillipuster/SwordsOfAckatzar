@@ -35,6 +35,14 @@ public class Command {
         this.args = args;
     }
 
+    public CMDT getType() {
+        return type;
+    }
+
+    public String getArg(int index) {
+        return args[index];
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();

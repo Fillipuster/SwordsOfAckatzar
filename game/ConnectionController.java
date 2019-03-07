@@ -64,4 +64,16 @@ public class ConnectionController {
         }
     }
 
+    // Commands
+    public void receiveCommand(Command command) {
+        switch (command.getType()) {
+            case JOIN:
+                Main.cmdPlayerJoin(new Player(command.getArg(0), Integer.parseInt(command.getArg(1)), Integer.parseInt(command.getArg(2)), command.getArg(3)));
+            case MOVE:
+                Main.cmdPlayerMove(Integer.parseInt(command.getArg(0)), Integer.parseInt(command.getArg(1)), command.getArg(2));
+            default:
+                System.out.println("Received unknown command.");
+        }
+    }
+
 }
