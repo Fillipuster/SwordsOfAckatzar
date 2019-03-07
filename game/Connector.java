@@ -19,6 +19,7 @@ public class Connector extends Thread {
         try {
             Socket connection = new Socket();
             connection.connect(new InetSocketAddress(ip, 6666), 1000);
+            System.out.println("Call connected with: " + connection.getInetAddress().getHostAddress());
             ConnectionController.getInstance().addConnection(connection);
         } catch (SocketTimeoutException e) {
             if (!kill) {

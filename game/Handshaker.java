@@ -17,6 +17,7 @@ public class Handshaker extends Thread {
     private void handshake() throws IOException {
         try {
             Socket connection = server.accept();
+            System.out.println("Heard: " + connection.getInetAddress().getHostAddress());
             ConnectionController.getInstance().addConnection(connection);
         } catch (SocketTimeoutException e) {}
 

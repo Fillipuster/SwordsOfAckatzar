@@ -7,6 +7,8 @@ public class PeerConnection {
 
     private InetAddress ip;
     private Socket connection;
+    private PeerReceiver receiver;
+    private PeerSender sender;
 
     public PeerConnection(InetAddress ip) {
         this.ip = ip;
@@ -15,7 +17,9 @@ public class PeerConnection {
     public void giveConnection(Socket connection) {
         this.connection = connection;
         System.out.println("Peer connection established with: " + ip.getHostAddress());
-        // Create sender and receiver thread.
+
+        receiver = new PeerReceiver(connection);
+        sender = new PeerSender(connection);
     }
 
     public boolean isConnected() {
