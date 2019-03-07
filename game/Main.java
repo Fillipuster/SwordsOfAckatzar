@@ -21,9 +21,9 @@ public class Main extends Application {
 
 	public static final String name = "Jonas Bones";
 	public static final String[] playerAddresses = {
-			"10.24.67.191", // Oscar
-			"10.24.4.96", // Frederik
-			"10.24.65.119", // Jonas
+			"10.24.2.163", // Oscar
+			"10.24.2.203", // Frederik
+			"10.24.65.135", // Jonas
 	};
 
 	public static final int size = 20;
@@ -226,6 +226,7 @@ public class Main extends Application {
 			try {
 				InetAddress inet = InetAddress.getByName(ip);
 				if (!InetAddress.getLocalHost().equals(inet)) {
+					System.out.println("Adding peer: " + ip);
 					cc.addPeer(inet);
 				}
 			} catch (UnknownHostException e) {
