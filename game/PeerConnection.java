@@ -20,6 +20,9 @@ public class PeerConnection {
 
         receiver = new PeerReceiver(connection);
         sender = new PeerSender(connection);
+
+        receiver.start();
+        sender.start();
     }
 
     public boolean isConnected() {
