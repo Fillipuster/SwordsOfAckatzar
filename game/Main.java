@@ -22,7 +22,7 @@ public class Main extends Application {
 	public static final int startY = 4; // 15
 	public static final String[] playerAddresses = {
 			"10.24.65.10", 	// Oscar 14, 15
-			//"192.168.46.48", 	// Frederik
+			"10.24.2.217", 	// Frederik 11, 4
 			"10.24.65.135", // Jonas 9, 4
 	};
 
@@ -155,28 +155,37 @@ public class Main extends Application {
 	}
 
 	public void localPlayerMoved(int delta_x, int delta_y, String direction) {
-	    int newX = me.getXpos() + delta_x;
-	    int newY = me.getYpos() + delta_y;
+	    int x = me.getXpos(), y = me.getYpos();
+	    int newX = x + delta_x;
+	    int newY = y + delta_y;
+
 	    if (board[newY].charAt(newX) == 'w') {
             // Points.
             System.out.println("Wall!");
+            me.addPoints(-1);
+            ConnectionController.getInstance().broadcastCommand(new Command(CMDT.MITE, new String[]{Integer.toString(x), Integer.toString(y), "-1"}));
             return;
         }
 
-	    if (getPlayerAt(newX, newY) != null) {
+	    Player targetPlayer = getPlayerAt(newX, newY);
+	    if (targetPlayer != null) {
 	        // Points.
             System.out.println("Player!");
+            me.addPoints(10);
+            ConnectionController.getInstance().broadcastCommand(new Command(CMDT.MITE, new String[]{Integer.toString(x), Integer.toString(y), "10"}));
+            ConnectionController.getInstance().broadcastCommand(new Command(CMDT.MITE, new String[]{Integer.toString(targetPlayer.getXpos()), Integer.toString(targetPlayer.getYpos()), "-10"}));
 	        return;
         }
-	    fields[me.getXpos()][me.getYpos()].setGraphic(new ImageView(image_floor));
 
-	    int x = me.getXpos(), y = me.getYpos();
+	    layFloor(x, y);
+
 		me.setXpos(newX);
 		me.setYpos(newY);
 		me.direction = direction;
 
-		Command moveCmd = new Command(CMDT.MOVE, new String[]{Integer.toString(x), Integer.toString(y), direction});
-		ConnectionController.getInstance().broadcastCommand(moveCmd);
+		me.addPoints(1);
+        ConnectionController.getInstance().broadcastCommand(new Command(CMDT.MITE, new String[]{Integer.toString(x), Integer.toString(y), "1"}));
+		ConnectionController.getInstance().broadcastCommand(new Command(CMDT.MOVE, new String[]{Integer.toString(x), Integer.toString(y), direction}));
 
 		updateGraphics();
 	}
@@ -216,6 +225,8 @@ public class Main extends Application {
 				fields[x][y].setGraphic(new ImageView(hero_down));
 			};
 		}
+
+		scoreList.setText(getScoreList());
 	}
 
 	public void layFloor(int x, int y) {
@@ -228,6 +239,15 @@ public class Main extends Application {
 		fxInstance.updateGraphics();
 	}
 
+	public void playerScore(int x, int y, int points) {
+	    Player p = getPlayerAt(x, y);
+	    if (p != null) {
+	        p.addPoints(points);
+        }
+
+	    updateGraphics();
+    }
+
 	/*
 			Commands
 	 */
@@ -235,7 +255,7 @@ public class Main extends Application {
 		Platform.runLater(() -> fxInstance.addPlayer(player));
 	}
 
-	public static void cmdPlayerMove(int xpos, int ypos, String direction) {
+	public static void cmdPlayerMove(int xpos, int ypos, String direction, int pointChange) {
 		Player p = fxInstance.getPlayerAt(xpos, ypos);
 		if (p != null) {
 			Platform.runLater(() -> fxInstance.layFloor(xpos, ypos));
@@ -261,6 +281,10 @@ public class Main extends Application {
 
 		Platform.runLater(() -> fxInstance.updateGraphics());
 	}
+
+	public static void cmdPlayerScore(int plyX, int plyY, int pointChange) {
+        Platform.runLater(() -> fxInstance.playerScore(plyX, plyY, pointChange));
+    }
 
 	public static void main(String[] args) throws Exception {
 		connect();
