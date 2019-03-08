@@ -2,21 +2,21 @@ package game;
 
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.net.InetSocketAddress;
 import java.net.Socket;
-import java.net.SocketTimeoutException;
-import java.util.ArrayDeque;
-import java.util.NoSuchElementException;
+import java.util.LinkedList;
 import java.util.Queue;
 
 public class PeerSender extends Thread {
 
+    private PeerConnection master;
     private Socket connection;
     private DataOutputStream output;
     private String cmdStr;
+    private Queue<String> commandQueue = new LinkedList<>();
 
-    public PeerSender(Socket connection) {
+    public PeerSender(PeerConnection master, Socket connection) {
         this.connection = connection;
+        this.master = master;
     }
 
     private void setup() throws IOException {
@@ -25,10 +25,13 @@ public class PeerSender extends Thread {
 
     private void send() throws IOException, InterruptedException {
         sleep(10);
-        if (cmdStr != null) {
-            output.writeBytes(cmdStr + "\n");
-            output.flush();
-            cmdStr = null;
+        if (ConnectionController.token) {
+            while (!commandQueue.isEmpty()) {
+                output.writeBytes(commandQueue.poll());
+                output.flush();
+            }
+
+            reliefToken();
         }
 
         send(); // Recursive call.
@@ -47,7 +50,11 @@ public class PeerSender extends Thread {
     }
 
     public void sendCommand(Command command) {
-        cmdStr = command.toString();
+        commandQueue.add(command.toString() + "\n");
+    }
+
+    public void reliefToken() {
+        master.reliefToken();
     }
 
 }

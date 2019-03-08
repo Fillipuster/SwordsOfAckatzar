@@ -18,11 +18,19 @@ public class PeerConnection {
         this.connection = connection;
         System.out.println("Peer connection established with: " + ip.getHostAddress());
 
-        receiver = new PeerReceiver(connection);
-        sender = new PeerSender(connection);
+        receiver = new PeerReceiver(this, connection);
+        sender = new PeerSender(this, connection);
 
         receiver.start();
         sender.start();
+    }
+
+    public void receiveCommand(Command command) {
+        if (command.getType().equals(CMDT.TOKN)) {
+            ConnectionController.token = true;
+        } else {
+            ConnectionController.getInstance().receiveCommand(command);
+        }
     }
 
     public boolean isConnected() {
@@ -35,6 +43,11 @@ public class PeerConnection {
 
     public void sendCommand(Command command) {
         sender.sendCommand(command);
+    }
+
+
+    public void reliefToken() {
+        ConnectionController.getInstance().reliefToken();
     }
 
 }

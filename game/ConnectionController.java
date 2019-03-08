@@ -2,6 +2,7 @@ package game;
 
 import java.net.InetAddress;
 import java.net.Socket;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 
 public class ConnectionController {
@@ -9,6 +10,7 @@ public class ConnectionController {
     // Static
     public static final int port = 6666;
     private static ConnectionController instance;
+    public static boolean token;
 
     public static ConnectionController getInstance() {
         if (instance == null) {
@@ -21,6 +23,13 @@ public class ConnectionController {
     // Dynamic
     private ArrayList<Connector> connectors = new ArrayList<>();
     private ArrayList<PeerConnection> peerConnections = new ArrayList<>();
+
+    public ConnectionController() {
+        // Ensure we start with the token if we are at the top of the IP list (our index is 0).
+        if (getAddressIndex() == 0) {
+            token = true;
+        }
+    }
 
     public void addPeer(InetAddress ip) {
         PeerConnection peerConnection = new PeerConnection(ip);
@@ -67,6 +76,9 @@ public class ConnectionController {
     // Commands
     public void receiveCommand(Command command) {
         switch (command.getType()) {
+            case TOKN:
+                token = true;
+                break;
             case JOIN:
                 Main.cmdPlayerJoin(new Player(command.getArg(0), Integer.parseInt(command.getArg(1)), Integer.parseInt(command.getArg(2)), command.getArg(3)));
                 break;
@@ -76,6 +88,38 @@ public class ConnectionController {
             default:
                 System.out.println("Received unknown command.");
                 break;
+        }
+    }
+
+    private int getAddressIndex() {
+        int result = -1;
+
+        try {
+            String myIp = InetAddress.getLocalHost().getHostAddress();
+
+            for (int i = 0; i < Main.playerAddresses.length; i++) {
+                if (Main.playerAddresses[i].equalsIgnoreCase(myIp)) {
+                    result = i;
+                    break;
+                }
+            }
+
+        } catch (UnknownHostException e) {
+            System.out.println("Failed to get local host address.");
+        }
+
+        return result;
+    }
+
+    public void reliefToken() {
+        int myAddress = getAddressIndex();
+        int target = myAddress + 1;
+        if (target >= Main.playerAddresses.length) target = 0;
+
+        if (myAddress >= 0) {
+            for (PeerConnection pc : peerConnections) {
+                if (pc.getIp().getHostAddress().equalsIgnoreCase(Main.playerAddresses[target])) pc.sendCommand(new Command(CMDT.TOKN, new String[]{}));
+            }
         }
     }
 

@@ -1,12 +1,9 @@
 package game;
 
-import java.util.HashMap;
-import java.util.concurrent.ConcurrentMap;
-
 public class Command {
 
-    private static CMDT[] arrTypes = {CMDT.JOIN, CMDT.MOVE, CMDT.MITE};
-    private static String[] arrStrings = {"JOIN", "MOVE", "MITE"};
+    private static CMDT[] arrTypes = {CMDT.TOKN, CMDT.JOIN, CMDT.MOVE, CMDT.MITE};
+    private static String[] arrStrings = {"TOKN", "JOIN", "MOVE", "MITE"};
 
     public static Command decode(String cmd) {
         String[] split = cmd.split(";");
