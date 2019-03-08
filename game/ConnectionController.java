@@ -85,7 +85,7 @@ public class ConnectionController {
                 break;
             case MOVE:
                 System.out.println("Received MOVE: " + command.toString());
-                Main.cmdPlayerMove(Integer.parseInt(command.getArg(0)), Integer.parseInt(command.getArg(1)), command.getArg(2), Integer.parseInt(command.getArg(3)));
+                Main.cmdPlayerMove(Integer.parseInt(command.getArg(0)), Integer.parseInt(command.getArg(1)), command.getArg(2));
                 break;
             case MITE:
                 Main.cmdPlayerScore(Integer.parseInt(command.getArg(0)), Integer.parseInt(command.getArg(1)), Integer.parseInt(command.getArg(2)));

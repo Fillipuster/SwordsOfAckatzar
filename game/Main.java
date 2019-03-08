@@ -255,7 +255,7 @@ public class Main extends Application {
 		Platform.runLater(() -> fxInstance.addPlayer(player));
 	}
 
-	public static void cmdPlayerMove(int xpos, int ypos, String direction, int pointChange) {
+	public static void cmdPlayerMove(int xpos, int ypos, String direction) {
 		Player p = fxInstance.getPlayerAt(xpos, ypos);
 		if (p != null) {
 			Platform.runLater(() -> fxInstance.layFloor(xpos, ypos));
