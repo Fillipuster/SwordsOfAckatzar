@@ -22,7 +22,7 @@ public class Main extends Application {
 	public static final int startY = 4; // 15
 	public static final String[] playerAddresses = {
 			"10.24.65.10", 	// Oscar 14, 15
-			"192.168.46.48", 	// Frederik
+			//"192.168.46.48", 	// Frederik
 			"10.24.65.135", // Jonas 9, 4
 	};
 
@@ -155,17 +155,24 @@ public class Main extends Application {
 	}
 
 	public void localPlayerMoved(int delta_x, int delta_y, String direction) {
-	    if (board[me.getYpos()].charAt(me.getXpos()) == 'w') {
+	    int newX = me.getXpos() + delta_x;
+	    int newY = me.getYpos() + delta_y;
+	    if (board[newY].charAt(newX) == 'w') {
             // Points.
+            System.out.println("Wall!");
             return;
         }
 
-	    //if ()
+	    if (getPlayerAt(newX, newY) != null) {
+	        // Points.
+            System.out.println("Player!");
+	        return;
+        }
 	    fields[me.getXpos()][me.getYpos()].setGraphic(new ImageView(image_floor));
 
-		int x = me.getXpos(), y = me.getYpos();
-		me.setXpos(x + delta_x);
-		me.setYpos(y + delta_y);
+	    int x = me.getXpos(), y = me.getYpos();
+		me.setXpos(newX);
+		me.setYpos(newY);
 		me.direction = direction;
 
 		Command moveCmd = new Command(CMDT.MOVE, new String[]{Integer.toString(x), Integer.toString(y), direction});
@@ -216,7 +223,7 @@ public class Main extends Application {
 	}
 
 	public void addPlayer(Player ply) {
-		System.out.println("PLAYER " + ply.name + " JOINED!");
+		System.out.println("Player " + ply.name + " joined!");
 		players.add(ply);
 		fxInstance.updateGraphics();
 	}
