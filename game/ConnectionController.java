@@ -87,7 +87,7 @@ public class ConnectionController {
                 Main.cmdPlayerMove(Integer.parseInt(command.getArg(0)), Integer.parseInt(command.getArg(1)), command.getArg(2), Integer.parseInt(command.getArg(3)));
                 break;
             default:
-                System.out.println("Received unknown command.");
+                System.out.println("Received unknown command: " + command.toString());
                 break;
         }
     }
