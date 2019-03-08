@@ -24,20 +24,21 @@ public class PeerSender extends Thread {
     }
 
     private void send() throws IOException, InterruptedException {
-        sleep(10);
-        if (ConnectionController.token) {
-            while (!commandQueue.isEmpty()) {
-                String cmd = commandQueue.poll();
-                if (cmd != null) {
-                    output.writeBytes(cmd + "\n");
-                    output.flush();
+        while (true) {
+            sleep(10);
+
+            if (ConnectionController.token) {
+                while (!commandQueue.isEmpty()) {
+                    String cmd = commandQueue.poll();
+                    if (cmd != null) {
+                        output.writeBytes(cmd + "\n");
+                        output.flush();
+                    }
                 }
+
+                reliefToken();
             }
-
-            reliefToken();
         }
-
-        send(); // Recursive call.
     }
 
     @Override
