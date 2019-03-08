@@ -22,7 +22,7 @@ public class Main extends Application {
 	public static final int startY = 4; // 15
 	public static final String[] playerAddresses = {
 			"10.24.65.10", 	// Oscar 14, 15
-			//"10.24.2.217", 	// Frederik
+			"192.168.46.48", 	// Frederik
 			"10.24.65.135", // Jonas 9, 4
 	};
 
@@ -155,6 +155,12 @@ public class Main extends Application {
 	}
 
 	public void localPlayerMoved(int delta_x, int delta_y, String direction) {
+	    if (board[me.getYpos()].charAt(me.getXpos()) == 'w') {
+            // Points.
+            return;
+        }
+
+	    //if ()
 	    fields[me.getXpos()][me.getYpos()].setGraphic(new ImageView(image_floor));
 
 		int x = me.getXpos(), y = me.getYpos();
@@ -162,7 +168,8 @@ public class Main extends Application {
 		me.setYpos(y + delta_y);
 		me.direction = direction;
 
-		ConnectionController.getInstance().broadcastCommand(new Command(CMDT.MOVE, new String[]{Integer.toString(x), Integer.toString(y), direction}));
+		Command moveCmd = new Command(CMDT.MOVE, new String[]{Integer.toString(x), Integer.toString(y), direction});
+		ConnectionController.getInstance().broadcastCommand(moveCmd);
 
 		updateGraphics();
 	}
@@ -222,7 +229,6 @@ public class Main extends Application {
 	}
 
 	public static void cmdPlayerMove(int xpos, int ypos, String direction) {
-
 		Player p = fxInstance.getPlayerAt(xpos, ypos);
 		if (p != null) {
 			Platform.runLater(() -> fxInstance.layFloor(xpos, ypos));
@@ -237,11 +243,11 @@ public class Main extends Application {
 			};
 			if (direction.equals("up")) {
 				p.setXpos(xpos);
-				p.setYpos(ypos + 1);
+				p.setYpos(ypos - 1);
 			};
 			if (direction.equals("down")) {
 				p.setXpos(xpos);
-				p.setYpos(ypos - 1);
+				p.setYpos(ypos + 1);
 			};
 			p.setDirection(direction);
 		}
