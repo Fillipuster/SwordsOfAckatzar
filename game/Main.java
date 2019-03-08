@@ -155,6 +155,8 @@ public class Main extends Application {
 	}
 
 	public void localPlayerMoved(int delta_x, int delta_y, String direction) {
+	    fields[me.getXpos()][me.getYpos()].setGraphic(new ImageView(image_floor));
+
 		int x = me.getXpos(), y = me.getYpos();
 		me.setXpos(x + delta_x);
 		me.setYpos(y + delta_y);
