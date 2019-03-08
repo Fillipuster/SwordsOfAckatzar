@@ -27,8 +27,11 @@ public class PeerSender extends Thread {
         sleep(10);
         if (ConnectionController.token) {
             while (!commandQueue.isEmpty()) {
-                output.writeBytes(commandQueue.poll());
-                output.flush();
+                String cmd = commandQueue.poll();
+                if (cmd != null && !cmd.isEmpty()) {
+                    output.writeBytes(cmd);
+                    output.flush();
+                }
             }
 
             reliefToken();
