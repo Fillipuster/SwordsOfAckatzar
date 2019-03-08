@@ -320,6 +320,7 @@ public class Main extends Application {
 
 		cc.handshake();
 		while (!cc.allConnected());
+        cc.startTokenPassing();
 	}
 
 }

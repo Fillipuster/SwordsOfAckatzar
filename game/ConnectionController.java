@@ -24,13 +24,6 @@ public class ConnectionController {
     private ArrayList<Connector> connectors = new ArrayList<>();
     private ArrayList<PeerConnection> peerConnections = new ArrayList<>();
 
-    public ConnectionController() {
-        // Ensure we start with the token if we are at the top of the IP list (our index is 0).
-        if (getAddressIndex() == 0) {
-            token = true;
-        }
-    }
-
     public void addPeer(InetAddress ip) {
         PeerConnection peerConnection = new PeerConnection(ip);
         peerConnections.add(peerConnection);
@@ -65,6 +58,12 @@ public class ConnectionController {
         }
 
         return true;
+    }
+
+    public void startTokenPassing() {
+        if (getAddressIndex() == 0) {
+            token = true;
+        }
     }
 
     public void broadcastCommand(Command command) {
