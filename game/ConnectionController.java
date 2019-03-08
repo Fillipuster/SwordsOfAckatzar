@@ -77,14 +77,13 @@ public class ConnectionController {
     public void receiveCommand(Command command) {
         switch (command.getType()) {
             case TOKN:
-                System.out.println("Received Token.");
+                System.out.println("TOKEN GET");
                 token = true;
                 break;
             case JOIN:
                 Main.cmdPlayerJoin(new Player(command.getArg(0), Integer.parseInt(command.getArg(1)), Integer.parseInt(command.getArg(2)), command.getArg(3)));
                 break;
             case MOVE:
-                System.out.println("Received MOVE: " + command.toString());
                 Main.cmdPlayerMove(Integer.parseInt(command.getArg(0)), Integer.parseInt(command.getArg(1)), command.getArg(2));
                 break;
             case MITE:

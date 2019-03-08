@@ -160,8 +160,6 @@ public class Main extends Application {
 	    int newY = y + delta_y;
 
 	    if (board[newY].charAt(newX) == 'w') {
-            // Points.
-            System.out.println("Wall!");
             me.addPoints(-1);
             ConnectionController.getInstance().broadcastCommand(new Command(CMDT.MITE, new String[]{Integer.toString(x), Integer.toString(y), "-1"}));
             return;
@@ -169,8 +167,6 @@ public class Main extends Application {
 
 	    Player targetPlayer = getPlayerAt(newX, newY);
 	    if (targetPlayer != null) {
-	        // Points.
-            System.out.println("Player!");
             me.addPoints(10);
             ConnectionController.getInstance().broadcastCommand(new Command(CMDT.MITE, new String[]{Integer.toString(x), Integer.toString(y), "10"}));
             ConnectionController.getInstance().broadcastCommand(new Command(CMDT.MITE, new String[]{Integer.toString(targetPlayer.getXpos()), Integer.toString(targetPlayer.getYpos()), "-10"}));
