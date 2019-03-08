@@ -29,7 +29,8 @@ public class PeerSender extends Thread {
             while (!commandQueue.isEmpty()) {
                 String cmd = commandQueue.poll();
                 if (cmd != null && !cmd.isEmpty()) {
-                    output.writeBytes(cmd);
+                    System.out.println("SENDING: " + cmd);
+                    output.writeBytes(cmd + "\n");
                     output.flush();
                 }
             }
@@ -53,7 +54,7 @@ public class PeerSender extends Thread {
     }
 
     public void sendCommand(Command command) {
-        commandQueue.add(command.toString() + "\n");
+        commandQueue.add(command.toString());
     }
 
     public void reliefToken() {

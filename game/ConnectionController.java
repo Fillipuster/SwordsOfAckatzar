@@ -88,6 +88,7 @@ public class ConnectionController {
                 break;
             case MITE:
                 Main.cmdPlayerScore(Integer.parseInt(command.getArg(0)), Integer.parseInt(command.getArg(1)), Integer.parseInt(command.getArg(2)));
+                break;
             default:
                 System.out.println("Received unknown command: " + command.toString());
                 break;
