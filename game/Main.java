@@ -18,10 +18,12 @@ import javafx.scene.text.*;
 public class Main extends Application {
 
 	public static final String name = "Jones Bones";
+	public static final int startX = 9; // 14
+	public static final int startY = 4; // 15
 	public static final String[] playerAddresses = {
-			"10.24.65.10", 	// Oscar
-			"10.24.2.217", 	// Frederik
-			"10.24.65.135", // Jonas
+			"10.24.65.10", 	// Oscar 14, 15
+			//"10.24.2.217", 	// Frederik
+			"10.24.65.135", // Jonas 9, 4
 	};
 
 	public static final int size = 20;
@@ -136,7 +138,7 @@ public class Main extends Application {
 
             // Setting up standard players
 
-			me = new Player(Main.name,9,4,"up");
+			me = new Player(Main.name,startX,startY,"up");
 			players.add(me);
 			fields[9][4].setGraphic(new ImageView(hero_up));
 
@@ -149,7 +151,7 @@ public class Main extends Application {
 			e.printStackTrace();
 		}
 
-		ConnectionController.getInstance().broadcastCommand(new Command(CMDT.JOIN, new String[]{Main.name, "9", "4", "up"}));
+		ConnectionController.getInstance().broadcastCommand(new Command(CMDT.JOIN, new String[]{Main.name, Integer.toString(startX), Integer.toString(startY), "up"}));
 	}
 
 	public void localPlayerMoved(int delta_x, int delta_y, String direction) {
