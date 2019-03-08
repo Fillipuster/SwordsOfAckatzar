@@ -86,6 +86,8 @@ public class ConnectionController {
             case MOVE:
                 Main.cmdPlayerMove(Integer.parseInt(command.getArg(0)), Integer.parseInt(command.getArg(1)), command.getArg(2), Integer.parseInt(command.getArg(3)));
                 break;
+            case MITE:
+                Main.cmdPlayerScore(Integer.parseInt(command.getArg(0)), Integer.parseInt(command.getArg(1)), Integer.parseInt(command.getArg(2)));
             default:
                 System.out.println("Received unknown command: " + command.toString());
                 break;
