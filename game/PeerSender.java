@@ -28,8 +28,7 @@ public class PeerSender extends Thread {
         if (ConnectionController.token) {
             while (!commandQueue.isEmpty()) {
                 String cmd = commandQueue.poll();
-                if (cmd != null && !cmd.isEmpty()) {
-                    if (!cmd.equalsIgnoreCase("TOKN")) System.out.println("SENDING: " + cmd);
+                if (cmd != null) {
                     output.writeBytes(cmd + "\n");
                     output.flush();
                 }
