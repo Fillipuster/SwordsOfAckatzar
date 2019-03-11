@@ -26,11 +26,7 @@ public class PeerConnection {
     }
 
     public void receiveCommand(Command command) {
-        if (command.getType().equals(CMDT.TOKN)) {
-            ConnectionController.token = true;
-        } else {
-            ConnectionController.getInstance().receiveCommand(command);
-        }
+        ConnectionController.getInstance().receiveCommand(command);
     }
 
     public boolean isConnected() {
