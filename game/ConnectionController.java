@@ -101,8 +101,8 @@ public class ConnectionController {
         try {
             String myIp = InetAddress.getLocalHost().getHostAddress();
 
-            for (int i = 0; i < Main.playerAddresses.length; i++) {
-                if (Main.playerAddresses[i].equalsIgnoreCase(myIp)) {
+            for (int i = 0; i < FileLoader.loadClients().size(); i++) {
+                if (FileLoader.loadClients().get(i).equalsIgnoreCase(myIp)) {
                     result = i;
                     break;
                 }
@@ -118,11 +118,11 @@ public class ConnectionController {
     public void reliefToken() {
         int myAddress = getAddressIndex();
         int target = myAddress + 1;
-        if (target >= Main.playerAddresses.length) target = 0;
+        if (target >= FileLoader.loadClients().size()) target = 0;
 
         if (myAddress >= 0) {
             for (PeerConnection pc : peerConnections) {
-                if (pc.getIp().getHostAddress().equalsIgnoreCase(Main.playerAddresses[target])) pc.sendCommand(new Command(CMDT.TOKN, new String[]{}));
+                if (pc.getIp().getHostAddress().equalsIgnoreCase(FileLoader.loadClients().get(target))) pc.sendCommand(new Command(CMDT.TOKN, new String[]{}));
             }
         }
     }

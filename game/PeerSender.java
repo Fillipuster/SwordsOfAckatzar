@@ -11,7 +11,6 @@ public class PeerSender extends Thread {
     private PeerConnection master;
     private Socket connection;
     private DataOutputStream output;
-    private String cmdStr;
     private Queue<String> commandQueue = new LinkedList<>();
 
     public PeerSender(PeerConnection master, Socket connection) {

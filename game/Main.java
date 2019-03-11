@@ -1,5 +1,7 @@
 package game;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.net.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -17,14 +19,10 @@ import javafx.scene.text.*;
 
 public class Main extends Application {
 
-	public static final String name = "Jones Bones";
-	public static final int startX = 9; // 14
-	public static final int startY = 4; // 15
-	public static final String[] playerAddresses = {
-			"10.24.65.10", 	// Oscar 14, 15
-			"10.24.2.217", 	// Frederik 11, 4
-			"10.24.65.135", // Jonas 9, 4
-	};
+    public static void main(String[] args) throws Exception {
+        connect();
+        launch(args);
+    }
 
 	public static final int size = 20;
 	public static final int scene_height = size * 20 + 100;
@@ -138,7 +136,7 @@ public class Main extends Application {
 
             // Setting up standard players
 
-			me = new Player(Main.name,startX,startY,"up");
+			me = new Player(FileLoader.getName(),FileLoader.getStartPosX(),FileLoader.getStartPosY(),"up");
 			players.add(me);
 			fields[9][4].setGraphic(new ImageView(hero_up));
 
@@ -151,7 +149,7 @@ public class Main extends Application {
 			e.printStackTrace();
 		}
 
-		ConnectionController.getInstance().broadcastCommand(new Command(CMDT.JOIN, new String[]{Main.name, Integer.toString(startX), Integer.toString(startY), "up"}));
+		ConnectionController.getInstance().broadcastCommand(new Command(CMDT.JOIN, new String[]{FileLoader.getName(), Integer.toString(FileLoader.getStartPosX()), Integer.toString(FileLoader.getStartPosY()), "up"}));
 	}
 
 	public void localPlayerMoved(int delta_x, int delta_y, String direction) {
@@ -282,14 +280,6 @@ public class Main extends Application {
         Platform.runLater(() -> fxInstance.playerScore(plyX, plyY, pointChange));
     }
 
-	public static void main(String[] args) throws Exception {
-		connect();
-		launch(args);
-	}
-
-	/*
-			Game/Graphics
-	 */
 	private static Main fxInstance;
 	private static void setInstance(Main instance) {
 		fxInstance = instance;
@@ -301,7 +291,7 @@ public class Main extends Application {
 	private static void connect() {
 		ConnectionController cc = ConnectionController.getInstance();
 
-		for (String ip : playerAddresses) {
+		for (String ip : FileLoader.loadClients()) {
 			try {
 				InetAddress inet = InetAddress.getByName(ip);
 				if (!InetAddress.getLocalHost().equals(inet)) {
