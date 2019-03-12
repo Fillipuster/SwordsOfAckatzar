@@ -41,7 +41,6 @@ public class PeerConnection {
         sender.sendCommand(command);
     }
 
-
     public void reliefToken() {
         ConnectionController.getInstance().reliefToken();
     }

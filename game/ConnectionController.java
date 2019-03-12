@@ -9,9 +9,8 @@ public class ConnectionController {
 
     // Static
     public static final int port = 6666;
-    private static ConnectionController instance;
+    private static ConnectionController instance; //Singleton
     public static boolean token;
-
     public static ConnectionController getInstance() {
         if (instance == null) {
             instance = new ConnectionController();
