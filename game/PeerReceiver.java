@@ -22,10 +22,10 @@ public class PeerReceiver extends Thread {
     }
 
     private void receive() throws IOException {
-        String in = input.readLine();
-        master.receiveCommand(Command.decode(in));
-
-        receive(); // Recursive call.
+        while (true) {
+            String in = input.readLine();
+            master.receiveCommand(Command.decode(in));
+        }
     }
 
     @Override
