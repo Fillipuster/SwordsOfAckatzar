@@ -171,17 +171,17 @@ public class Main extends Application {
 	        return;
         }
 
-//	    layFloor(x, y);
-//
-//		me.setXpos(newX);
-//		me.setYpos(newY);
-//		me.direction = direction;
-//
+	    layFloor(x, y);
+
+		me.setXpos(newX);
+		me.setYpos(newY);
+		me.direction = direction;
+
 		me.addPoints(1);
         ConnectionController.getInstance().broadcastCommand(new Command(CMDT.MITE, new String[]{Integer.toString(x), Integer.toString(y), "1"}));
 		ConnectionController.getInstance().broadcastCommand(new Command(CMDT.MOVE, new String[]{Integer.toString(x), Integer.toString(y), direction}));
 
-//		updateGraphics();
+		updateGraphics();
 	}
 
 	public String getScoreList() {
@@ -192,7 +192,7 @@ public class Main extends Application {
 		return b.toString();
 	}
 
-	public Player getPlayerAt(int x, int y) {
+	public static Player getPlayerAt(int x, int y) {
 		for (Player p : players) {
 			if (p.getXpos()==x && p.getYpos()==y) {
 				return p;
@@ -245,6 +245,39 @@ public class Main extends Application {
 	/*
 			Commands
 	 */
+	public static boolean validateMove(Command command) {
+		boolean valid = true;
+
+
+		int x = Integer.parseInt(command.getArg(0)), y = Integer.parseInt(command.getArg(1));
+		Player p = getPlayerAt(x, y);
+
+		if (p != null) {
+			switch (command.getArg(2)) {
+				case "up":
+					p.setYpos(y - 1);
+					break;
+				case "right":
+					p.setXpos(x - 1);
+					break;
+				case "down":
+					p.setYpos(y + 1);
+					break;
+				case "left ":
+					p.setXpos(x + 1);
+					break;
+				default:
+					System.out.println("Invalid revertion direction.");
+			}
+
+			Platform.runLater(() -> fxInstance.updateGraphics());
+
+			valid = false;
+		}
+
+		return valid;
+	}
+
 	public static void cmdPlayerJoin(Player player) {
 		Platform.runLater(() -> fxInstance.addPlayer(player));
 	}

@@ -24,18 +24,21 @@ public class PeerSender extends Thread {
 
     private void send() throws IOException, InterruptedException {
         while (true) {
-            sleep(10);
+            sleep(1);
 
             if (ConnectionController.token) {
                 while (!commandQueue.isEmpty()) {
                     Command cmd = commandQueue.poll();
                     if (cmd != null) {
+                        boolean valid = true;
                         if (cmd.getType().equals(CMDT.MOVE)) {
-                            master.receiveCommand(cmd);
+                            valid = Main.validateMove(cmd);
                         }
 
-                        output.writeBytes(cmd.toString() + "\n");
-                        output.flush();
+                        if (valid) {
+                            output.writeBytes(cmd.toString() + "\n");
+                            output.flush();
+                        }
                     }
                 }
 
