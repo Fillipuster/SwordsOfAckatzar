@@ -86,6 +86,7 @@ public class ConnectionController {
                 Main.cmdPlayerMove(Integer.parseInt(command.getArg(0)), Integer.parseInt(command.getArg(1)), command.getArg(2));
                 break;
             case MITE:
+                System.out.println("Received MITE command...");
                 Main.cmdPlayerScore(Integer.parseInt(command.getArg(0)), Integer.parseInt(command.getArg(1)), Integer.parseInt(command.getArg(2)));
                 break;
             default:
