@@ -248,7 +248,6 @@ public class Main extends Application {
 	public static boolean validateMove(Command command) {
 		boolean valid = true;
 
-
 		int x = Integer.parseInt(command.getArg(0)), y = Integer.parseInt(command.getArg(1));
 		Player p = getPlayerAt(x, y);
 
@@ -283,26 +282,35 @@ public class Main extends Application {
 	}
 
 	public static void cmdPlayerMove(int xpos, int ypos, String direction) {
-		Player p = fxInstance.getPlayerAt(xpos, ypos);
+		Player p = getPlayerAt(xpos, ypos);
+
+		int newX = xpos;
+		int newY = ypos;
+
+		if (direction.equals("right")) {
+			newX++;
+		};
+		if (direction.equals("left")) {
+			newX--;
+		};
+		if (direction.equals("up")) {
+			newY--;
+		};
+		if (direction.equals("down")) {
+			newY++;
+		};
+
+		Player pDestination = getPlayerAt(newX, newY);
+		if (pDestination != null) {
+			return;
+		}
+
 		if (p != null) {
 			Platform.runLater(() -> fxInstance.layFloor(xpos, ypos));
 
-			if (direction.equals("right")) {
-				p.setXpos(xpos + 1);
-				p.setYpos(ypos);
-			};
-			if (direction.equals("left")) {
-				p.setXpos(xpos - 1);
-				p.setYpos(ypos);
-			};
-			if (direction.equals("up")) {
-				p.setXpos(xpos);
-				p.setYpos(ypos - 1);
-			};
-			if (direction.equals("down")) {
-				p.setXpos(xpos);
-				p.setYpos(ypos + 1);
-			};
+			p.setXpos(newX);
+			p.setYpos(newY);
+
 			p.setDirection(direction);
 		}
 

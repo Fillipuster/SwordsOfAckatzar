@@ -30,15 +30,8 @@ public class PeerSender extends Thread {
                 while (!commandQueue.isEmpty()) {
                     Command cmd = commandQueue.poll();
                     if (cmd != null) {
-                        boolean valid = true;
-                        if (cmd.getType().equals(CMDT.MOVE)) {
-                            valid = Main.validateMove(cmd);
-                        }
-
-                        if (valid) {
-                            output.writeBytes(cmd.toString() + "\n");
-                            output.flush();
-                        }
+                        output.writeBytes(cmd.toString() + "\n");
+                        output.flush();
                     }
                 }
 
