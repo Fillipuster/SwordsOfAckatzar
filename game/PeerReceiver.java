@@ -24,7 +24,9 @@ public class PeerReceiver extends Thread {
     private void receive() throws IOException {
         while (true) {
             String in = input.readLine();
-            master.receiveCommand(Command.decode(in));
+            Command cmd = Command.decode(in);
+            if (!cmd.toString().equalsIgnoreCase("TOKN")) System.out.println("Received: " + cmd.toString());
+            master.receiveCommand(cmd);
         }
     }
 

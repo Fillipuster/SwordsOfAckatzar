@@ -24,12 +24,13 @@ public class PeerSender extends Thread {
 
     private void send() throws IOException, InterruptedException {
         while (true) {
-            sleep(50);
+            sleep(10);
 
             if (ConnectionController.token) {
                 while (!commandQueue.isEmpty()) {
                     String cmd = commandQueue.poll();
                     if (cmd != null) {
+                        if (!cmd.toString().equalsIgnoreCase("TOKN")) System.out.println("Sending: " + cmd.toString());
                         output.writeBytes(cmd + "\n");
                         output.flush();
                     }
