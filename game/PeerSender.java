@@ -24,7 +24,7 @@ public class PeerSender extends Thread {
 
     private void send() throws IOException, InterruptedException {
         while (true) {
-            sleep(10);
+            sleep(1);
 
             if (ConnectionController.token) {
                 while (!commandQueue.isEmpty()) {
