@@ -192,7 +192,7 @@ public class Main extends Application {
 		return b.toString();
 	}
 
-	public Player getPlayerAt(int x, int y) {
+	public static Player getPlayerAt(int x, int y) {
 		for (Player p : players) {
 			if (p.getXpos()==x && p.getYpos()==y) {
 				return p;
@@ -233,15 +233,6 @@ public class Main extends Application {
 		fxInstance.updateGraphics();
 	}
 
-	public void playerScore(int x, int y, int points) {
-	    Player p = getPlayerAt(x, y);
-	    if (p != null) {
-	        p.addPoints(points);
-        }
-
-	    updateGraphics();
-    }
-
 	/*
 			Commands
 	 */
@@ -277,7 +268,12 @@ public class Main extends Application {
 	}
 
 	public static void cmdPlayerScore(int plyX, int plyY, int pointChange) {
-        Platform.runLater(() -> fxInstance.playerScore(plyX, plyY, pointChange));
+		Player p = getPlayerAt(plyX, plyY);
+		if (p != null) {
+			p.addPoints(pointChange);
+		}
+
+        Platform.runLater(() -> fxInstance.updateGraphics());
     }
 
 	private static Main fxInstance;
