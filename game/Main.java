@@ -171,17 +171,17 @@ public class Main extends Application {
 	        return;
         }
 
-	    layFloor(x, y);
-
-		me.setXpos(newX);
-		me.setYpos(newY);
-		me.direction = direction;
-
+//	    layFloor(x, y);
+//
+//		me.setXpos(newX);
+//		me.setYpos(newY);
+//		me.direction = direction;
+//
 		me.addPoints(1);
         ConnectionController.getInstance().broadcastCommand(new Command(CMDT.MITE, new String[]{Integer.toString(x), Integer.toString(y), "1"}));
 		ConnectionController.getInstance().broadcastCommand(new Command(CMDT.MOVE, new String[]{Integer.toString(x), Integer.toString(y), direction}));
 
-		updateGraphics();
+//		updateGraphics();
 	}
 
 	public String getScoreList() {

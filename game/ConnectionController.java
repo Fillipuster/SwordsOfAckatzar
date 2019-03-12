@@ -62,7 +62,7 @@ public class ConnectionController {
 
     public void startTokenPassing() {
         if (getAddressIndex() == 0) {
-            System.out.println("YOU HAVE THE TOKEN!");
+            System.out.println("You start with the token.");
             token = true;
         }
     }
@@ -77,7 +77,6 @@ public class ConnectionController {
     public void receiveCommand(Command command) {
         switch (command.getType()) {
             case TOKN:
-                System.out.println("TOKEN GET");
                 token = true;
                 break;
             case JOIN:

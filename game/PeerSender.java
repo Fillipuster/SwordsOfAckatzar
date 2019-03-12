@@ -11,7 +11,7 @@ public class PeerSender extends Thread {
     private PeerConnection master;
     private Socket connection;
     private DataOutputStream output;
-    private Queue<String> commandQueue = new LinkedList<>();
+    private Queue<Command> commandQueue = new LinkedList<>();
 
     public PeerSender(PeerConnection master, Socket connection) {
         this.connection = connection;
@@ -28,9 +28,13 @@ public class PeerSender extends Thread {
 
             if (ConnectionController.token) {
                 while (!commandQueue.isEmpty()) {
-                    String cmd = commandQueue.poll();
+                    Command cmd = commandQueue.poll();
                     if (cmd != null) {
-                        output.writeBytes(cmd + "\n");
+                        if (cmd.getType().equals(CMDT.MOVE)) {
+                            master.receiveCommand(cmd);
+                        }
+
+                        output.writeBytes(cmd.toString() + "\n");
                         output.flush();
                     }
                 }
@@ -53,7 +57,7 @@ public class PeerSender extends Thread {
     }
 
     public void sendCommand(Command command) {
-        commandQueue.add(command.toString());
+        commandQueue.add(command);
     }
 
     public void reliefToken() {
